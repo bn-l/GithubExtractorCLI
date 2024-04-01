@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.vscode/
+.tap/
+.tmp/
+coverage/coverage-summary.json
+.vitepress/cache
+.vitepress/dist

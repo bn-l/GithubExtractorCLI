@@ -1,0 +1,69 @@
+# vim: set filetype=yaml :
+# this is a yaml file containing tap configuration
+#
+# when you're done, the data will be written to .taprc
+# if the config isn't valid, or if you quit without making changes,
+# then no changes will be made.
+#
+# Comments and empty lines will be removed.
+
+# All available configuration options. See `tap help` for descriptions.
+#
+# after: string
+allow-empty-coverage: false
+allow-incomplete-coverage: false
+# bail: boolean
+# before: string
+# changed: boolean
+color: true
+# comments: boolean
+coverage-map: coverage-map.mjs
+coverage-report:
+  - text
+# debug: boolean
+# diag: boolean
+disable-coverage: false
+exclude:
+  - "**/@(fixture*(s)|dist)/**"
+# fail-skip: boolean
+# fail-todo: boolean
+# files: string[]
+# filter-quietly: boolean
+# grep: string[]
+# help: boolean
+include:
+  - "**/@(test?(s)|__test?(s)__)/**/*.@(js|cjs|mjs|tap|cts|jsx|mts|ts|tsx)"
+  - "**/*.@(test?(s)|spec).@(js|cjs|mjs|tap|cts|jsx|mts|ts|tsx)"
+  - "**/test?(s).@(js|cjs|mjs|tap|cts|jsx|mts|ts|tsx)"
+# invert: boolean
+jobs: 9
+# no-bail: boolean
+# no-color: boolean
+# no-diag: boolean
+# no-filter-quietly: boolean
+# no-invert: boolean
+# no-omit-whitespace: boolean
+# no-snapshot-clean-cwd: boolean
+# node-arg: string[]
+# omit-version: boolean
+# omit-whitespace: boolean
+only: true
+# output-dir: string
+# output-file: string
+# passes: boolean
+# plugin: string[]
+reporter: tap
+# reporter-arg: string[]
+# reporter-file: string
+# save: string
+# save-fixture: boolean
+# serial: string[]
+show-full-coverage: true
+# snapshot: boolean
+snapshot-clean-cwd: true
+# test-arg: string[]
+# test-env: string[]
+timeout: 30
+# typecheck: boolean
+# version: boolean
+# versions: boolean

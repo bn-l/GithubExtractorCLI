@@ -1,0 +1,67 @@
+{
+    "compilerOptions": {
+        // the "react" option means convert the jsx to regular js (so it doesn't have to go through another transpilation) and then rename it to ".js". This is not the default.
+        "jsx": "react",
+        "esModuleInterop": true,
+        "target": "ES2022",
+        "lib": [
+            "DOM",
+            "ES2022",
+        ],
+        "baseUrl": ".",
+        "allowJs": true,
+        "skipLibCheck": true,
+        "emitDecoratorMetadata": false,
+        "module": "Node16",
+        "moduleResolution": "Node16",
+        "outDir": "dist",
+        "declaration": true,
+        "sourceMap": true,
+        "isolatedModules": true,
+        "declarationMap": true,
+        "noEmitOnError": true,
+        "strict": true,
+        "allowUnreachableCode": false,
+        "alwaysStrict": true,
+        "exactOptionalPropertyTypes": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noPropertyAccessFromIndexSignature": false,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitAny": true,
+        "resolveJsonModule": true,
+        // "noUnusedLocals": true,
+        // "noUnusedParameters": true,
+        // "allowImportingTsExtensions": true, // Change module resolution to bundler later
+        // "emitDeclarationOnly": true, // will not output JS but necessary for .mts imports
+    },
+    "exclude": [
+        "**/node_modules",
+        "**/dist",
+        "**/build",
+        "*.js",
+        "*.mjs",
+        "*.cjs",
+    ],
+    "include": [
+        "source",
+        "test",
+        "bench",
+        "types",
+    ],
+    "plugins": [
+
+    ],
+    "env": {
+    },
+    "ts-node": {
+		"transpileOnly": true,
+		"files": true,
+		"experimentalResolver": true,
+        "esm": true,
+        "swc": true
+    },
+}
+
