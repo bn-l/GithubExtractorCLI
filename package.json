@@ -28,7 +28,7 @@
     "coverage-badge": "tsx scripts/coverage-badge.ts",
     "build:clean": "rimraf ./dist && tsc --build",
     "publish-ci": "tsx scripts/publish-ci.ts",
-    "pub": "npx bumpp",
+    "pub": "npx bumpp"
   },
   "keywords": [
     "cli",
