@@ -11,6 +11,96 @@ import pathe from "pathe";
 import indentString from "indent-string";
 
 
+export interface GithubExtractorOptions {
+    /**
+     * E.g. "octocat" in https://github.com/octocat/Spoon-Knife
+     */
+    owner: string;
+    /**
+     * E.g. "Spoon-Knife" in https://github.com/octocat/Spoon-Knife
+     */
+    repo: string;
+    /**
+     * Whether to ignore casing in paths. Default is false so SomePath/someFile.js will be
+     * different to SOMEPATH/somefile.js.
+     * @default false
+     */
+    caseInsensitive?: boolean;
+}
+export interface ListStreamOptions {
+    /**
+     * The stream to write the repo paths to for visual output as the list is being created.
+     *  by default it will write to the console.
+     * @default process.stdout
+     */
+    outputStream?: NodeJS.WritableStream;
+    /**
+     * Whether to use ascii escape characters to highlight conflicts when writing to the
+     *  outputStream.
+     * @default true
+     */
+    highlightConflicts?: boolean;
+    /**
+     * Include new line at the end of each listed repo path.
+     * @default true
+     */
+    newLine?: boolean;
+}
+export interface ListOptions {
+    /**
+     * The destination directory for the repo's files. Used to detect conflicts
+     * and must be set if any conflict option is set.
+     */
+    dest?: string;
+    /**
+     * Only list repo files in conflict with dest
+     * @default false
+     */
+    conflictsOnly?: boolean;
+    /**
+     * If false will only list files and folders in the top level. Useful for repos with many files.
+     * @default true
+     */
+    recursive?: boolean;
+    /**
+     * Options for the stream to write the repo paths to for visual output as the list is being created. By default it writes to the console.
+     */
+    streamOptions?: ListStreamOptions;
+    /**
+     * Must match every regular expression if given.
+     */
+    match?: RegExp;
+}
+export interface DownloadToOptions {
+    /**
+     * Destination to download the files into. Warning: it will overwrite any existing files
+     * by default unless extractOptions are set.
+     */
+    dest: string;
+    /**
+     * Will only download these paths.
+     * @example
+     * ["README.md", ".github/workflows/ci.yml"]
+     */
+    selectedPaths?: string[];
+    /**
+     * Must match every regular expression if given. If {@link selectedPaths} is given, it
+     * will operate on selected only.
+     */
+    match?: RegExp;
+    /**
+     * Pass through options for the tar.extract stream. Not very important
+     *  but here for completeness.
+     */
+    // extractOptions?: Omit<tar.ExtractOptions, "filter" | "cwd" | "strip" | "onentry" | "C">;
+}
+
+const debug = false;
+
+
+// Globs are converted to regexs, so paths with globs become regexs
+
+
 // //// debug ////////////////
 // const flag = "-d";
 // const flagArg = "./.tmp";
@@ -22,29 +112,13 @@ import indentString from "indent-string";
 
 // ///////////////////////////
 
-const { input: paths, flags } = getCli();
-c.showColor = flags.colors;
 
 // Organise:
 // Sets to false if undefined
-let { list: listMode = false, quiet = false, dest, keepIf, caseInsensitive = false, conflictsOnly = false } = flags;
 
-const ownerGrouping: OwnerGroup = groupByOwner({ paths });
-const parsedGroups: ParsedGroup[] = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
 
 // Execute:
 
-try {
-    await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, keepIf });
-    if (!flags.list && !flags.quiet) {
-        console.log(c.success(`Successfully downloaded to ${ pathe.resolve(flags.dest) }`));
-    }
-}
-catch (error) {
-    if (error instanceof Error && !flags.quiet) {
-        console.log(c.error(`\n${ error.message }\n`));
-    }
-}
 
 // // // !! Debug
 // console.log(" Got:\n------");
@@ -63,7 +137,7 @@ export function normalizePath(rPath: string) {
 }
 
 //                                                         paths[] 
-interface OwnerGroup { [owner: string]: { [repo: string]: string[] } }
+export interface OwnerGroup { [owner: string]: { [repo: string]: string[] } }
 
 export function groupByOwner({ paths }:{ paths: string[] }): OwnerGroup {
     
@@ -93,7 +167,7 @@ export function groupByOwner({ paths }:{ paths: string[] }): OwnerGroup {
     return ownerGroup;
 }
 
-interface ParsedGroup {
+export interface ParsedGroup {
     gheInstance: GithubExtractor;
     selectedFiles?: string[];
     regex?: RegExp;
@@ -122,7 +196,7 @@ export function parseOwnerGroups(
                     nocase: caseInsensitive,
                 }));
                 const combinedSources = regexes.map(r => r.source).join("|");
-                const combinedFlags = regexes.map(r => r.flags).join("");
+                const combinedFlags = [...(new Set(regexes.map(r => r.flags)))].join("");
                 const regex = new RegExp(combinedSources, combinedFlags);
 
                 parsedGroups.push({ gheInstance, regex });
@@ -136,10 +210,10 @@ export function parseOwnerGroups(
 }
 
 
-function handleTypos(typos: Typo[]) {
+function handleTypos(typos: Typo[], quiet: boolean) {
     // type Typo = [original: string, correction: string];
 
-    if (!flags.quiet) {
+    if (!quiet) {
         const header = `\
             Found the following possible typos:
             (original -> suggested correction)
@@ -151,8 +225,8 @@ function handleTypos(typos: Typo[]) {
 }
 
 export async function executeParsedGroups(
-    { listMode, conflictsOnly, parsedGroups, dest, keepIf }: 
-    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; keepIf: string | undefined }
+    { listMode, conflictsOnly, parsedGroups, dest, keepIf, quiet }: 
+    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; keepIf: string | undefined; quiet: boolean }
 
 ): Promise<void> {
     for (const group of parsedGroups) {
@@ -174,7 +248,7 @@ export async function executeParsedGroups(
                 },
             };
             const typos = await group.gheInstance.downloadTo(opts);
-            handleTypos(typos);
+            handleTypos(typos, quiet);
         }
     }
 }
