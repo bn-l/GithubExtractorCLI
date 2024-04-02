@@ -12,7 +12,7 @@ vi.mock("undici", async(originalImport) => {
 });
 
 import { GithubExtractor } from "../source/GithubExtractor.mjs";
-import { APIFetchError } from "../source/custom-errors.mjs";
+import { FetchError } from "../source/custom-errors.mjs";
 
 import { request, MockAgent, setGlobalDispatcher, } from "undici";
 import fs from "node:fs";
@@ -222,9 +222,9 @@ describe.sequential("getRepoList", context => {
     
         const ghe = new GithubExtractor({ owner, repo });
     
-        const include = new RegExp('somefile.txt|README.md');
+        const match = new RegExp('somefile.txt|README.md');
     
-        const list = await ghe.list({ include });
+        const list = await ghe.list({ match });
     
         expect(list).toHaveLength(2);
         expect(list).to.have.deep.members([
@@ -617,7 +617,7 @@ describe.sequential("downloadTo", context => {
 
         const ghe = new GithubExtractor({ owner, repo });
 
-        await ghe.downloadTo({ dest: TEMP_DIR, include: /.*\.txt$/ });
+        await ghe.downloadTo({ dest: TEMP_DIR, match: /.*\.txt$/ });
 
         expect(() => checkFileExists(`${ TEMP_DIR }/somefile.txt`)).not.toThrow();
 

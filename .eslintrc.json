@@ -34,27 +34,27 @@
         
         "space-in-parens": ["error", "never"],
         "prefer-const": "off",
-        "sort-class-members/sort-class-members": [
-			2,
-			{
-				"order": [
+        // "sort-class-members/sort-class-members": [
+		// 	2,
+		// 	{
+		// 		"order": [
 
-					"[pub-props]",
-					"[protected-props]",
-					"[private-props]",
-					"[conventional-private-properties]",
-                    "[static-properties]",
-					"constructor",
-					"[everything-else]"
-				],
-                "groups": {
-                    "pub-props": [{"accessibility": "public", "type": "property", "sort": "alphabetical"}],
-                    "protected-props": [{"accessibility": "protected", "type": "property", "sort": "alphabetical"}],
-                    "private-props": [{"accessibility": "private", "type": "property", "sort": "alphabetical"}]
-                },
-				"accessorPairPositioning": "getThenSet"
-			}
-		],
+		// 			"[pub-props]",
+		// 			"[protected-props]",
+		// 			"[private-props]",
+		// 			"[conventional-private-properties]",
+        //             "[static-properties]",
+		// 			"constructor",
+		// 			"[everything-else]"
+		// 		],
+        //         "groups": {
+        //             "pub-props": [{"accessibility": "public", "type": "property", "sort": "alphabetical"}],
+        //             "protected-props": [{"accessibility": "protected", "type": "property", "sort": "alphabetical"}],
+        //             "private-props": [{"accessibility": "private", "type": "property", "sort": "alphabetical"}]
+        //         },
+		// 		"accessorPairPositioning": "getThenSet"
+		// 	}
+		// ],
 
         "unicorn/prefer-date-now": "error",
         "unicorn/prefer-node-protocol": "error",
