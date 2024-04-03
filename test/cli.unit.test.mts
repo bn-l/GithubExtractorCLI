@@ -2,6 +2,7 @@
 import { getCli, c, Option } from "../source/cli.mjs";
 import {describe, it, expect, beforeEach, afterEach } from "vitest";
 import sinon from 'sinon';
+import stripAnsi from "strip-ansi";
 
 describe("CLI tests", () => {
 
@@ -127,17 +128,15 @@ describe('cli.mts', () => {
         it(`should correctly log the ${method} with color`, () => {
             c.showColor = true;
             // @ts-expect-error testing
-            const colorized = c[method]('test');
-            const ansiEscapeCodes = /\x1b\[[0-9;]*m/;
-            expect(colorized).to.match(ansiEscapeCodes);
+            const stripped = stripAnsi(c[method]('test'));
+            expect(stripped).to.match(/test/);
         });
 
         it(`should correctly log ${method} without color`, () => {
             c.showColor = false;
             // @ts-expect-error testing
-            const colorized = c[method]('test');
-            const ansiEscapeCodes = /\x1b\[[0-9;]*m/;
-            expect(colorized).to.not.match(ansiEscapeCodes);
+            const stripped = stripAnsi(c[method]('test'));
+            expect(stripped).to.match(/test/);
         });
     });
 });

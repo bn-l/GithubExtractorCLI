@@ -38,10 +38,11 @@ export const helpText = `
 
         ${ c.strong("Arguments:") }
         paths                      One or more paths to download. Can be a whole 
-                                    repo, a folder or a file. ${ c.strong("Supports globs") }.
-                                    To exclude use a negative glob ("!" at the beginning).
-                                    Can mix paths from different repos (conflicts resolved
-                                    left to right). A trailing slash means a whole folder.
+                                    repo, a folder or a file. ${ c.strong("Supports globs") }
+                                    but the path should be quoted. To exclude use a negative 
+                                    glob ("!" at the beginning). Can mix paths from different 
+                                    repos (conflicts resolved left to right). A trailing slash
+                                    means a whole folder.
         ${ c.strong("Options:") }
         -l, --list                  List files. Useful as a dry run and with fzf. Does not
                                      download. Will show show conflicts for the current 
@@ -59,14 +60,14 @@ export const helpText = `
 
         ${ c.strong("Download Examples:") }
         Entire repo             ${ c.binColor(name) + " facebook/react" }
-        Specific folder         ${ c.binColor(name) + " facebook/react/packages/*" }
+        Specific folder         ${ c.binColor(name) + " \"facebook/react/packages/*\"" }
         Specify destination     ${ c.binColor(name) + " -d local/dest facebook/react" }
         Specific files          ${ c.binColor(name) + " facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml" }
         Different repos mixed   ${ c.binColor(name) + " facebook/react  micromatch/picomatch" }
 
         ${ c.strong("List Examples:") }
         Only conflicts          ${ c.binColor(name) + " -lc -d local/dest  facebook/react" }
-        Specific folder         ${ c.binColor(name) + " -l facebook/react/.circleci/*" }
+        Specific folder         ${ c.binColor(name) + " -l \"facebook/react/.circleci/*\"" }
 
         For a video demo of usage see: ${ c.strong(docsUrl) }
 `;

@@ -35,7 +35,7 @@ ghe -h
 ### paths
 
 One or more paths to download. Can be a whole 
-repo, a folder or a file. Supports globs.
+repo, a folder or a file. Supports globs but the path should be quoted.
 To exclude use a negative glob ("!" at the beginning).
 Can mix paths from different repos (conflicts resolved
 left to right). A trailing slash means a whole folder.
@@ -85,7 +85,7 @@ ghe facebook/react
 ```
 Specific folder:
 ```bash
-ghe facebook/react/packages/*
+ghe "facebook/react/packages/*"
 ```
 Specify destination:
 ```bash
@@ -109,7 +109,7 @@ ghe -lc -d local/dest  facebook/react
 ```
 Specific folder
 ```bash
-ghe -l facebook/react/.circleci/*
+ghe -l "facebook/react/.circleci/*"
 ```
 
 
