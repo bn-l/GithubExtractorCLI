@@ -26,14 +26,11 @@
     "test:online": "vitest online --bail=1",
     "test:all": "vitest --run --coverage",
     "lint": "npx eslint source --ext .mts",
-    "lint:strict": "npx eslint --config ./eslint-strict.json source --ext .mts",
     "build": "tsc --build --incremental",
     "coverageBadge": "tsx scripts/coverage-badge.ts",
     "build:clean": "rimraf ./dist && tsc --build",
     "buildReadme": "tsx scripts/readme-helper.mts",
-    "bundle": "esbuild app.jsx --bundle --outfile=out.js",
-    "pub": "npx bumpp",
-    "tsup": "tsup source/index.mts --minify --dts --treeshake --format esm --out-dir dist/source"
+    "pub": "npx bumpp"
   },
   "keywords": [
     "cli",

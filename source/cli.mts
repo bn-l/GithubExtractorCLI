@@ -1,6 +1,4 @@
 
-import config from "../getConfig.mjs";
-
 import chalk from "chalk";
 import meow from "meow";
 

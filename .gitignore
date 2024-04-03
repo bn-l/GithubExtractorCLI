@@ -6,4 +6,3 @@ dist/
 coverage/coverage-summary.json
 docs/.vitepress/cache
 docs/.vitepress/dist
-out.js

@@ -14,12 +14,7 @@ import wrapAnsi from "wrap-ansi";
 // - Add to docs website under "CLI". Import github readme file in <script setup> tags + add 
 //     small blurb 
 // - create video demo
-// - make sure tests aren't included in build
-// - Bundle with esbuild (see: esbuild-config.json)
-//     and change build:clean to this build proc
 // - Show usages with fzf--upload ascii svg recording to docs/cli/ (by way of the README)
-// - Remove console.log from cli.mts
-// - clean package.json
 
 let spinner: Ora | undefined = undefined;
 let quiet = false;
