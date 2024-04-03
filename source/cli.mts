@@ -44,18 +44,18 @@ export const helpText = `
                                     left to right). A trailing slash means a whole folder.
         ${ c.strong("Options:") }
         -l, --list                  List files. Useful as a dry run and with fzf. Does not
-                                    download. Will show show conflicts for the current 
-                                    working directory if -d / --dest is not specified.
+                                     download. Will show show conflicts for the current 
+                                     working directory if -d / --dest is not specified.
         -c, --conflicts-only        Only show conflicts when listing.
         -d, --dest <folder>         Destination folder. Defaults to the current directory.
         -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
-                                    case-sensitive--i.e. casing matters.
+                                     case-sensitive--i.e. casing matters.
         -k, --keep-if <condition>   "newer" | "existing". Will keep conflicting files 
-                                    if they exist or are newer. ${ c.careful("WARNING:") } The
-                                    default is to overwrite existing silently.
+                                     if they exist or are newer. ${ c.careful("WARNING:") } The
+                                     default is to overwrite existing silently.
         -q, --quiet                 No success or error messages.                   
         --colors                    Use ansi escape characters to color output.
-                                    Default true but respects the NO_COLOR env var if set. 
+                                     Default true but respects the NO_COLOR env var if set. 
 
         ${ c.strong("Download Examples:") }
         Entire repo             ${ c.binColor(name) + " facebook/react" }

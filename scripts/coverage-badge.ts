@@ -59,8 +59,8 @@ const svg = badgen({
     color,
 });
 
-fs.mkdirSync("./docs/images/", { recursive: true });
+fs.mkdirSync("./media/", { recursive: true });
 
-fs.writeFileSync("./docs/images/coverage-badge.svg", svg);
+fs.writeFileSync("./media/coverage-badge.svg", svg);
 
 fs.rmSync(summaryPath);
