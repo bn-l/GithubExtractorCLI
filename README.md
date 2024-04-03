@@ -21,8 +21,13 @@ See an Asciinema video of usage (including with [fzf](https://github.com/junegun
 
 ## Usage: 
 
-```
+```bash
 ghe [options] <paths...>
+```
+
+To get help message:
+```bash
+ghe -h
 ```
 
 ## Arguments:
