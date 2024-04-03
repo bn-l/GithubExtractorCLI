@@ -1,7 +1,7 @@
 {
   "name": "ghex",
   "longName": "GithubExtractorCLI",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Github Extractor cli: List or download a whole repo or specific files and folders very quickly",
   "summary": "List and download repositories or individual files quickly",
   "tagline": "Better than clone depth=1",
