@@ -34,7 +34,7 @@ jobs:
         run: npm run build:clean
 
       - name: Test All
-        run: npm test:all
+        run: npm run test:all
                 
       - name: Update coverage badge
         run: npm run coverageBadge
