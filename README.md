@@ -1,5 +1,7 @@
 
-# github-extractor
+# GHEX
+
+Github Extractor CLI
 
 <div align="center">
     <img src="./media/logo-1024.webp" alt="header logo: Github Extractor CLI" width="35%" height="35%">
@@ -22,12 +24,12 @@ See an Asciinema video of usage (including with [fzf](https://github.com/junegun
 ## Usage: 
 
 ```bash
-ghe [options] <paths...>
+ghex [options] <paths...>
 ```
 
 To get help message:
 ```bash
-ghe -h
+ghex -h
 ```
 
 ## Arguments:
@@ -81,23 +83,23 @@ Default true but respects the NO_COLOR env var if set.
 
 Entire repo:
 ```bash             
-ghe facebook/react
+ghex facebook/react
 ```
 Specific folder:
 ```bash
-ghe "facebook/react/packages/*"
+ghex "facebook/react/packages/*"
 ```
 Specify destination:
 ```bash
-ghe -d local/dest facebook/react
+ghex -d local/dest facebook/react
 ```
 Specific files
 ```bash
-ghe facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml
+ghex facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml
 ```
 Different repos mixed together"
 ```bash
-ghe facebook/react  micromatch/picomatch
+ghex facebook/react  micromatch/picomatch
 ```
 
 
@@ -105,11 +107,11 @@ ghe facebook/react  micromatch/picomatch
 
 Only conflicts
 ```bash
-ghe -lc -d local/dest  facebook/react
+ghex -lc -d local/dest  facebook/react
 ```
 Specific folder
 ```bash
-ghe -l "facebook/react/.circleci/*"
+ghex -l "facebook/react/.circleci/*"
 ```
 
 

@@ -1,5 +1,5 @@
 {
-  "name": "ghe",
+  "name": "ghex",
   "longName": "GithubExtractorCLI",
   "version": "0.0.1",
   "description": "Github Extractor cli: List or download a whole repo or specific files and folders very quickly",
@@ -8,7 +8,7 @@
   "docsUrl": "https://bn-l.github.io/GithubExtractor/cli/",
   "main": "./dist/source/index.mjs",
   "bin": {
-    "ghe": "./dist/source/index.mjs"
+    "ghex": "./dist/source/index.mjs"
   },
   "author": "bn-l",
   "repository": {
