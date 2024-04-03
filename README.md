@@ -18,13 +18,11 @@ See an Asciinema video of usage (including with [fzf](https://github.com/junegun
 </div>
 
 
-<!-- ABOVE SNIP -->
-
 
 
 
 # Quickstart
-
+<!-- ABOVE SNIP -->
 Install [node](https://nodejs.org/en/download) then:
 
 ```bash
