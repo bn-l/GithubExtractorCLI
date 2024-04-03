@@ -23,7 +23,7 @@ export const c = {
 };
 
 
-const { name, docsUrl } = config;
+const { name, docsUrl } = meow({importMeta: import.meta}).pkg as { name: string, docsUrl: string };
 
 export enum Option {
     dest = "dest",
@@ -35,46 +35,48 @@ export enum Option {
     quiet = "quiet",
 }
 
+export const helpText = `
+        Usage: ${ c.binColor(name) } [options] <paths...>
+
+        ${ c.strong("Arguments:") }
+        paths                      One or more paths to download. Can be a whole 
+                                    repo, a folder or a file. ${ c.strong("Supports globs") }.
+                                    To exclude use a negative glob ("!" at the beginning).
+                                    Can mix paths from different repos (conflicts resolved
+                                    left to right). A trailing slash means a whole folder.
+        ${ c.strong("Options:") }
+        -l, --list                  List files. Useful as a dry run and with fzf. Does not
+                                    download. Will show show conflicts for the current 
+                                    working directory if -d / --dest is not specified.
+        -c, --conflicts-only        Only show conflicts when listing.
+        -d, --dest <folder>         Destination folder. Defaults to the current directory.
+        -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
+                                    case-sensitive--i.e. casing matters.
+        -k, --keep-if <condition>   "newer" | "existing". Will keep conflicting files 
+                                    if they exist or are newer. ${ c.careful("WARNING:") } The
+                                    default is to overwrite existing silently.
+        -q, --quiet                 No success or error messages.                   
+        --colors                    Use ansi escape characters to color output.
+                                    Default true but respects the NO_COLOR env var if set. 
+
+        ${ c.strong("Download Examples:") }
+        Entire repo             ${ c.binColor(name) + " facebook/react" }
+        Specific folder         ${ c.binColor(name) + " facebook/react/packages/*" }
+        Specify destination     ${ c.binColor(name) + " -d local/dest facebook/react" }
+        Specific files          ${ c.binColor(name) + " facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml" }
+        Different repos mixed   ${ c.binColor(name) + " facebook/react  micromatch/picomatch" }
+
+        ${ c.strong("List Examples:") }
+        Only conflicts          ${ c.binColor(name) + " -lc -d local/dest  facebook/react" }
+        Specific folder         ${ c.binColor(name) + " -l facebook/react/.circleci/*" }
+
+        For a video demo of usage see: ${ c.strong(docsUrl) }
+`;
+
 
 export function getCli(argv?: string[]) {
     
-    const cli = meow(`
-        ${ c.strong("Usage:") } ${ c.binColor("name") } [options] <paths...>
-
-        ${ c.strong("Arguments:") }
-           paths                      One or more path to download. Can be a whole 
-                                       repo, a folder, or a file. ${ c.strong("Supports globs") }.
-                                       To exclude use a negative glob ("!" at the beginning).
-                                       Can mix paths from different repos (conflicts resolved
-                                       left to right). A traling slash means a whole folder.
-        ${ c.strong("Options:") }
-          -l, --list                  List files. Useful as a dry run. Will not download. Will show
-                                       show conflicts for the current working directory if
-                                       -d / --dest is not specified.
-          -c, --conflicts-only        Only show conflicts when listing.
-          -d, --dest <folder>         Destination folder. Defaults to the current directory.
-          -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
-                                       case-sensitive.
-          -k, --keep-if <condition>   "newer" | "existing". Will keep conflicting files 
-                                       if they exist or are newer. ${ c.careful("WARNING:") } The
-                                       default is to overwrite existing silently.
-          -q, --quiet                 No success or error messages.                   
-          --colors                    Use ansi escape characters to color output.
-                                       default true and respects the NO_COLOR env var if set. 
-
-        ${ c.strong("Download Examples:") }
-          Entire repo          ${ c.binColor("name") + " facebook/react" }
-          Specific folder      ${ c.binColor("name") + " facebook/react/packages/react/*" }
-          Specify destination  ${ c.binColor("name") + " -d local/dest facebook/react" }
-          Specific files       ${ c.binColor("name") + " facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml" }
-          Different repos      ${ c.binColor("name") + " facebook/react  micromatch/picomatch" }
-
-        ${ c.strong("List Examples:") }
-          Only conflicts       ${ c.binColor("name") + " -lc -d local/dest  facebook/react" }
-          Specific folder      ${ c.binColor("name") + " -l facebook/react/.circleci/*" }
-
-        For a video demo of usage see: ${ c.strong(docsUrl) }
-    `, {
+    const cli = meow(helpText, {
         importMeta: import.meta,
         flags: {
             [Option.list]: {

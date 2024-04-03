@@ -10,7 +10,11 @@ const result = await esbuild.build({
     minify: true,
     treeShaking: true,
     drop: ["console", "debugger"],
-    metafile: true
+    metafile: true,
+    format: "esm",
+    
+    
+    // mainFields: ['module', 'main'], // test if changing this makes a diff
 });
 
 fs.writeFileSync('esbuild-meta.json', JSON.stringify(result.metafile))

@@ -2,6 +2,7 @@
 import fs from "node:fs";
 
 
+
 const config = [
     "name",
     "bin",

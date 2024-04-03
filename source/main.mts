@@ -12,7 +12,7 @@ export function normalizePath(rPath: string) {
         rPath = rPath.slice(1);
     }
     if (rPath.endsWith("/")) {
-        rPath = rPath + "**";
+        rPath += "**";
     }
     return rPath;
 }
@@ -49,7 +49,7 @@ export function groupByOwner({ paths }:{ paths: string[] }): OwnerGroup {
 
     for (const rPath of paths) {
 
-        const badArgsMessage = `Invalid path. Must be in the format: "owner/repo/path" or just "owner/repo". Received ${ rPath.length ? rPath : "an empty string" } when parsing the arguments: ${ process.argv.slice(2).map(a => `"${ a }"`) }`;
+        const badArgsMessage = `Invalid path. Must be in the format: "owner/repo/path" or just "owner/repo". Received "${ rPath }" when parsing the arguments:` + process.argv.slice(2).map(a => `"${ a }"`).join(", ");
         
         const normedPath = normalizePath(rPath);
         if (!normedPath) throw new Error(badArgsMessage);
@@ -83,10 +83,10 @@ export function parseOwnerGroups(
 ): ParsedGroup[] {
     const parsedGroups: ParsedGroup[] = [];
 
-    for (const owner in ownerGrouping) {
-        for (const repo in ownerGrouping[owner]) {
+    for (const owner of Object.keys(ownerGrouping)) {
+        for (const repo of Object.keys(ownerGrouping[owner]!)) {
 
-            let rawPaths = ownerGrouping[owner]![repo]!;
+            const rawPaths = ownerGrouping[owner]![repo]!;
 
             const gheInstance = new GithubExtractor({ owner, repo, caseInsensitive });
 
@@ -127,7 +127,7 @@ function handleTypos(typos: Typo[], quiet: boolean) {
             (original -> suggested correction)
 
         `;
-        let body = typos.map(t => `${ c.warning(t[0]) } -> ${ c.success(t[1]) }`).join("\n");
+        const body = typos.map(t => `${ c.warning(t[0]) } -> ${ c.success(t[1]) }`).join("\n");
         console.log(indentString(header + body, 2));
     }
 }

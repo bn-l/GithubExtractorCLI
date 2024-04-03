@@ -19,5 +19,5 @@ body:
       label: Checks
       description: Before submitting the issue, please make sure you do the following
       options:
-        - label: Searched [existing issues](https://github.com/vitest-dev/vitest/issues) for reports of the same feature request to avoid creating a duplicate.
+        - label: Searched existing issues for reports of the same feature request to avoid creating a duplicate.
           required: true

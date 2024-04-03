@@ -34,12 +34,15 @@ jobs:
   #       run: exit 1
   #       if: steps.changes.outputs.workflow == 'true'
 
-  lint:
+
+  housekeeping:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install
         run: npm ci
+      - name: buildReadme
+        run: npm run buildReadme
       - name: Lint
         run: npm run lint
 
