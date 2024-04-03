@@ -11,6 +11,7 @@ import wrapAnsi from "wrap-ansi";
 // name
 
 // Todo:
+// - Manually do readme from heap text (but can still use script to insert new text to be hand formatted.)
 // - Add to docs website under "CLI". Import github readme file in <script setup> tags + add 
 //     small blurb 
 // - create video demo

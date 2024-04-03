@@ -7,7 +7,7 @@ const readmePath = "./README.md";
 
 const plainHelp = stripAnsi(helpText)
 
-const readmeAppendix = "```\n" + plainHelp + "\n```";
+const readmeAppendix = "\n" + plainHelp + "\n";
 
 const readme = fs.readFileSync(readmePath, { encoding: "utf8" });
 const readmeSnip = readme.split("<!-- SNIP -->")[0];

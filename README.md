@@ -17,45 +17,96 @@ See an Asciinema video of usage (including with [fzf](https://github.com/junegun
 
 
 <br/><br/>
+
+
+## Usage: 
+
+```
+ghe [options] <paths...>
+```
+
+## Arguments:
+
+### paths
+
+One or more paths to download. Can be a whole 
+repo, a folder or a file. Supports globs.
+To exclude use a negative glob ("!" at the beginning).
+Can mix paths from different repos (conflicts resolved
+left to right). A trailing slash means a whole folder.
+
+
+## Options:
+
+### -l, --list 
+
+List files. Useful as a dry run and with fzf. Does not
+download. Will show show conflicts for the current 
+working directory if -d / --dest is not specified.
+
+### -c, --conflicts-only  
+
+Only show conflicts when listing.
+
+### -d, --dest <folder>    
+
+Destination folder. Defaults to the current directory.
+
+### -i, --case-insensitive      
+
+Ignores case when checking for conflicts. Default is 
+case-sensitive--i.e. casing matters.
+
+### -k, --keep-if <condition>   
+
+"newer" | "existing". Will keep conflicting files 
+if they exist or are newer. WARNING: The
+default is to overwrite existing silently.
+
+### -q, --quiet    
+
+No success or error messages.     
+
+### --colors    
+
+Use ansi escape characters to color output.
+Default true but respects the NO_COLOR env var if set. 
+
+## Downloading Examples:
+
+Entire repo:
+```bash             
+ghe facebook/react
+```
+Specific folder:
+```bash
+ghe facebook/react/packages/*
+```
+Specify destination:
+```bash
+ghe -d local/dest facebook/react
+```
+Specific files
+```bash
+ghe facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml
+```
+Different repos mixed together"
+```bash
+ghe facebook/react  micromatch/picomatch
+```
+
+
+### Listing Examples:
+
+Only conflicts
+```bash
+ghe -lc -d local/dest  facebook/react
+```
+Specific folder
+```bash
+ghe -l facebook/react/.circleci/*
+```
+
+
 <!-- Everything after the snip is snipped off -->
 <!-- SNIP -->
-
-```
-
-        Usage: ghe [options] <paths...>
-
-        Arguments:
-        paths                      One or more paths to download. Can be a whole 
-                                    repo, a folder or a file. Supports globs.
-                                    To exclude use a negative glob ("!" at the beginning).
-                                    Can mix paths from different repos (conflicts resolved
-                                    left to right). A trailing slash means a whole folder.
-        Options:
-        -l, --list                  List files. Useful as a dry run and with fzf. Does not
-                                     download. Will show show conflicts for the current 
-                                     working directory if -d / --dest is not specified.
-        -c, --conflicts-only        Only show conflicts when listing.
-        -d, --dest <folder>         Destination folder. Defaults to the current directory.
-        -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
-                                     case-sensitive--i.e. casing matters.
-        -k, --keep-if <condition>   "newer" | "existing". Will keep conflicting files 
-                                     if they exist or are newer. WARNING: The
-                                     default is to overwrite existing silently.
-        -q, --quiet                 No success or error messages.                   
-        --colors                    Use ansi escape characters to color output.
-                                     Default true but respects the NO_COLOR env var if set. 
-
-        Download Examples:
-        Entire repo             ghe facebook/react
-        Specific folder         ghe facebook/react/packages/*
-        Specify destination     ghe -d local/dest facebook/react
-        Specific files          ghe facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml
-        Different repos mixed   ghe facebook/react  micromatch/picomatch
-
-        List Examples:
-        Only conflicts          ghe -lc -d local/dest  facebook/react
-        Specific folder         ghe -l facebook/react/.circleci/*
-
-        For a video demo of usage see: https://bn-l.github.io/GithubExtractor/cli/
-
-```

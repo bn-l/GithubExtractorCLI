@@ -41,8 +41,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install
         run: npm ci
-      - name: buildReadme
-        run: npm run buildReadme
       - name: Lint
         run: npm run lint
 
