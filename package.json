@@ -25,7 +25,7 @@
     "test:single": "vitest --bail=1",
     "test:online": "vitest online --bail=1",
     "test:all": "vitest --run --coverage",
-    "lint": "npx eslint source --ext .mts",
+    "lint": "npx eslint --ext .mts",
     "build": "tsc --build --incremental",
     "coverageBadge": "tsx scripts/coverage-badge.ts",
     "build:clean": "rimraf ./dist && tsc --build",

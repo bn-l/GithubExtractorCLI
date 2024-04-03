@@ -17,7 +17,6 @@
         "project": true
     },
     "ignorePatterns": [
-        "**",
         "!source/**"
     ],
     "plugins": [
