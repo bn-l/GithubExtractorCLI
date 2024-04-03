@@ -9,7 +9,7 @@ Github Extractor CLI
 
 
 
-List github repositories and download individual files or whole repos conveniently. Faster than clone depth=1 for an entire repo and much faster if you just need a single file
+List github repositories or download individual files or whole repos conveniently. Faster than clone depth=1 for an entire repo and much faster if you just need a single file
 
 See an Asciinema video of usage (including with [fzf](https://github.com/junegunn/fzf)) here: https://bn-l.github.io/GithubExtractor/cli/
  
@@ -20,19 +20,28 @@ See an Asciinema video of usage (including with [fzf](https://github.com/junegun
 
 <br/><br/>
 
+# Quickstart
 
-## Usage: 
+Install [node](https://nodejs.org/en/download) then:
+
+```bash
+npx ghex -h
+```
+
+Or:
+
+```bash
+npm install -g ghex
+```
+
+## Usage
+
 
 ```bash
 ghex [options] <paths...>
 ```
 
-To get help message:
-```bash
-ghex -h
-```
-
-## Arguments:
+## Arguments
 
 ### paths
 
@@ -43,7 +52,7 @@ Can mix paths from different repos (conflicts resolved
 left to right). A trailing slash means a whole folder.
 
 
-## Options:
+## Options
 
 ### -l, --list 
 
@@ -83,23 +92,23 @@ Default true but respects the NO_COLOR env var if set.
 
 Entire repo:
 ```bash             
-ghex facebook/react
+npx ghex facebook/react
 ```
 Specific folder:
 ```bash
-ghex "facebook/react/packages/*"
+npx ghex "facebook/react/packages/*"
 ```
 Specify destination:
 ```bash
-ghex -d local/dest facebook/react
+npx ghex -d local/dest facebook/react
 ```
 Specific files
 ```bash
-ghex facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml
+npx ghex facebook/react/.circleci/config.yml  facebook/react/.github/stale.yml
 ```
 Different repos mixed together"
 ```bash
-ghex facebook/react  micromatch/picomatch
+npx ghex facebook/react  micromatch/picomatch
 ```
 
 
@@ -107,11 +116,11 @@ ghex facebook/react  micromatch/picomatch
 
 Only conflicts
 ```bash
-ghex -lc -d local/dest  facebook/react
+npx ghex -lc -d local/dest  facebook/react
 ```
 Specific folder
 ```bash
-ghex -l "facebook/react/.circleci/*"
+npx ghex -l "facebook/react/.circleci/*"
 ```
 
 

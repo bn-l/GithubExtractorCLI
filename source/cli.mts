@@ -21,7 +21,7 @@ export const c = {
 };
 
 
-const { name, docsUrl } = meow({importMeta: import.meta}).pkg as { name: string, docsUrl: string };
+const { name, docsUrl } = meow({ importMeta: import.meta }).pkg as { name: string; docsUrl: string };
 
 export enum Option {
     dest = "dest",
