@@ -62,7 +62,7 @@ working directory if -d / --dest is not specified.
 
 Only show conflicts when listing.
 
-### -d, --dest <folder>    
+### -d, --dest folder   
 
 Destination folder. Defaults to the current directory.
 
@@ -71,7 +71,7 @@ Destination folder. Defaults to the current directory.
 Ignores case when checking for conflicts. Default is 
 case-sensitive--i.e. casing matters.
 
-### -k, --keep-if <condition>   
+### -k, --keep-if condition   
 
 "newer" | "existing". Will keep conflicting files 
 if they exist or are newer. WARNING: The

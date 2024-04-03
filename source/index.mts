@@ -12,10 +12,9 @@ import wrapAnsi from "wrap-ansi";
 // name
 
 // Todo:
-// - Manually do readme from heap text (but can still use script to insert new text to be hand formatted.)
 // - Add to docs website under "CLI". Import github readme file in <script setup> tags + add 
 //     small blurb 
-// - create video demo
+// - create video demo and add to readme
 // - Show usages with fzf--upload ascii svg recording to docs/cli/ (by way of the README)
 
 let spinner: Ora | undefined = undefined;
