@@ -1,121 +1,150 @@
-import { describe, expect, it, vi, beforeEach, afterEach, afterAll, beforeAll, VitestUtils } from "vitest";
-
-import sinon, { SinonSpy } from "sinon";
-
-vi.mock("undici", async(originalImport) => {
-    const mod = await originalImport<typeof import("undici")>();
-    return {
-        ...mod,
-        request: sinon.spy(mod.request),
-    };
-});
-
-import { GithubExtractor } from "../source/GithubExtractor.mjs";
-import { FetchError } from "../source/custom-errors.mjs";
-
-import { request, MockAgent, setGlobalDispatcher, } from "undici";
-import fs from "node:fs";
-
-import { Readable } from "node:stream";
-// import { SerializableErrror } from "tar"
 
 
-const TEMP_DIR = "./test/fixtures/TEMP_DIR";
+import { normalizePath, groupByOwner, parseOwnerGroups, OwnerGroup, destructurePath, executeParsedGroups } from "../source/main.mjs";
+import {describe, it, expect, beforeEach, afterEach } from "vitest";
+import pico from "picomatch";
+import GithubExtractor from "github-extractor";
+import sinon from "sinon";
 
-const mockAgent = new MockAgent();
-mockAgent.disableNetConnect();
-setGlobalDispatcher(mockAgent);
-const mockPool = mockAgent.get("https://codeload.github.com");
+import pathe from "pathe";
+import fs from "fs";
 
-const redirectPool = mockAgent.get("https://github.com");
+import { fileURLToPath } from 'url';
+
+const __dirname = pathe.dirname(fileURLToPath(import.meta.url));
+const TEMP_DIR = pathe.resolve(__dirname, "./fixtures/temp-repo-dir/");
 
 
-// !! create real online test that tests redirect
-// !! Remove sequential / delays from this`
+describe("Correct selected files given to GithubExtractor.downloadTo", async () => {
 
-const addRepoIntercept = () => {
-    mockPool.intercept({
-        path: "/bn-l/repo/tar.gz/main",
-        method: "GET",
-        headers: {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        }
-    }).reply(200, 
-        fs.readFileSync("./test/fixtures/repo-main.tar.gz"),
-        { 
-            headers: { 
-                "content-type": "application/x-gzip",
-            } 
-        }
-    );
-}
-// * Testing redirect
-
-const addRedirectIntercept = () => {
-    mockPool.intercept({
-        path: "/bn-l/repo2/tar.gz/main",
-        method: "GET",
-        headers: {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        }
-    }).reply(404);
-    redirectPool.intercept({
-
-        path: "/bn-l/repo2/archive/refs/heads/master.tar.gz",
-        method: "GET",
-        headers: {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        }
-    }).reply(302, undefined, {
-        headers: {
-            'Location': 'https://codeload.github.com/bn-l/repo2/tar.gz/master'
-        }
+    let ownerGrouping: OwnerGroup;
+    let listMode = false;
+    let caseInsensitive = false;
+    let conflictsOnly = false;
+    let quiet = false;
+    let keepIf: undefined | string = undefined;
+        
+    beforeEach(() => {
+        sinon.restore();
     });
-    mockPool.intercept({
-        path: "/bn-l/repo2/tar.gz/master",
-        method: "GET",
-        headers: {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-        }
-    }).reply(200,
-        fs.readFileSync("./test/fixtures/repo-main.tar.gz"),
-        { 
-            headers: { 
-                "content-type": "application/x-gzip",
-            } 
-        }
-    );
-}
+    afterEach(() => {
+        sinon.restore();
+    });
+
+    it("correctly supplies the selected files argument when all paths are direct files", async () => {
+
+        ownerGrouping = ownerGrouping = {
+            owner1: { repo1: [ "path1.txt", "path2.txt" ] },
+        };
+
+        const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
+
+        const owners = parsedGroups.map(group => group.gheInstance.owner);
+        const repos = parsedGroups.map(group => group.gheInstance.repo);
+        const paths = parsedGroups.map(group => group.selectedFiles);
+        const regexes = parsedGroups.map(group => group.regex);
+
+        expect(owners).to.have.members(["owner1"]);
+        expect(repos).to.have.members(["repo1"]);
+        expect(paths).to.include.deep.members([["path1.txt", "path2.txt"]]);
+        regexes.forEach(regex => expect(regex).toBeUndefined());
+
+        const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
+        
+        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+
+        expect(stubbedDownloadTo.calledOnce).toBe(true);
+        expect(stubbedDownloadTo.firstCall.args[0]).to.deep.equal({
+            "extractOptions": {
+                "keep-existing": undefined,
+                "keep-newer": undefined,
+            },
+            selectedPaths: ["path1.txt", "path2.txt"],
+            dest: TEMP_DIR,
+        });
+    });
 
 
-beforeAll(() => {
-    // sinon.restore();
-    // vi.restoreAllMocks();
-    fs.mkdirSync(TEMP_DIR, { recursive: true });
+    it("correctly supplies the selected files argument when there are globs in the paths", async () => {
+
+        ownerGrouping = ownerGrouping = {
+            owner1: { repo1: [ "path1/**", "path2.txt" ] },
+        };
+
+        const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
+
+        const owners = parsedGroups.map(group => group.gheInstance.owner);
+        const repos = parsedGroups.map(group => group.gheInstance.repo);
+        const paths = parsedGroups.map(group => group.selectedFiles);
+        const regexes = parsedGroups.map(group => group.regex);
+
+        expect(owners).to.have.members(["owner1"]);
+        expect(repos).to.have.members(["repo1"]);
+        paths.forEach(path => expect(path).toBeUndefined());
+        expect(regexes).toBeDefined();
+        regexes.forEach(regex => expect(regex).toBeInstanceOf(RegExp));
+
+        const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
+        
+        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+
+        expect(stubbedDownloadTo.calledOnce).toBe(true);
+
+        const args = stubbedDownloadTo.firstCall.args[0];
+        const  {match: matchArg, ...otherArgs } = args;
+
+        expect(matchArg).toBeInstanceOf(RegExp);
+
+        expect(otherArgs).to.deep.equal({
+            "extractOptions": {
+                "keep-existing": undefined,
+                "keep-newer": undefined,
+            },
+            dest: TEMP_DIR,
+        });
+    });
+
+    it("For two owners there are two calls to downloadTo", async () => {
+
+        ownerGrouping = ownerGrouping = {
+            owner1: { repo1: [ "path1.txt" ] },
+            owner2: { repo2: [ "path2.txt" ] },
+        };
+
+        const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
+        const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
+        
+        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+
+        expect(stubbedDownloadTo.callCount).toBe(2);
+    });
+
+    it("For one owner, one repo, two paths expect one call to downloadTo", async () => {
+
+        ownerGrouping = ownerGrouping = {
+            owner1: { repo1: [ "path1.txt", "path2.txt" ] },
+        };
+
+        const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
+        const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
+        
+        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+
+        expect(stubbedDownloadTo.callCount).toBe(1);
+    });
+
+    it("For one owner, two repos expect two calls to downloadTo", async () => {
+
+        ownerGrouping = ownerGrouping = {
+            owner1: { repo1: [ "path1.txt", "path2.txt" ], repo2: [ "path1.txt", "path2.txt" ] },
+        };
+
+        const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
+        const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
+        
+        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+
+        expect(stubbedDownloadTo.callCount).toBe(2);
+    });
+
 });
-
-beforeEach(async() => {
-    // await new Promise((res) => setTimeout(res, Math.random() * 1000));
-
-    fs.mkdirSync(TEMP_DIR, { recursive: true });
-    fs.rmSync(TEMP_DIR, { recursive: true });
-    fs.mkdirSync(TEMP_DIR, { recursive: true });
-
-    sinon.reset();
-    // @ts-expect-error testing
-    request.resetHistory();
-    vi.restoreAllMocks();
-});
-
-afterEach(() => {
-    // @ts-expect-error testing
-    request.resetHistory();
-    vi.restoreAllMocks();
-});
-
-
-afterAll(() => {
-    fs.rmSync(TEMP_DIR, { recursive: true });
-});
-
-

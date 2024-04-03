@@ -2,15 +2,13 @@
 import config from "../getConfig.mjs";
 
 import chalk from "chalk";
-import minimist from "minimist";
-import wrapAnsi from "wrap-ansi";
-import meow, { Result } from "meow";
+import meow from "meow";
 
 
-const noColor = Boolean(process.env.NO_COLOR && ["true", "yes", "on"].includes(process.env.NO_COLOR.toLowerCase().trim()));
+const noColor = () => Boolean(process.env.NO_COLOR && ["true", "yes", "on", true].includes(process.env.NO_COLOR.toLowerCase().trim()));
 
 export const c = {
-    showColor: !noColor,
+    showColor: true,
     colorize: (color: string, str: string): string => {
         return c.showColor ? chalk.hex(color)(str) : str;
     },
@@ -50,8 +48,9 @@ export function getCli(argv?: string[]) {
                                        Can mix paths from different repos (conflicts resolved
                                        left to right). A traling slash means a whole folder.
         ${ c.strong("Options:") }
-          -l, --list                  List files. Useful as a dry run. Will not download. To
-                                       view conflicts, supply the -d / --dest option. 
+          -l, --list                  List files. Useful as a dry run. Will not download. Will show
+                                       show conflicts for the current working directory if
+                                       -d / --dest is not specified.
           -c, --conflicts-only        Only show conflicts when listing.
           -d, --dest <folder>         Destination folder. Defaults to the current directory.
           -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
@@ -78,19 +77,13 @@ export function getCli(argv?: string[]) {
     `, {
         importMeta: import.meta,
         flags: {
-            [Option.dest]: {
-                type: "string",
-                shortFlag: "d",
-                default: process.cwd(),
-                isRequired: (flags) => !!flags[Option.conflictsOnly],
-            },
             [Option.list]: {
                 type: "boolean",
                 shortFlag: "l",
             },
             [Option.colors]: {
                 type: "boolean",
-                default: !noColor,   
+                default: !noColor(),   
             },
             [Option.conflictsOnly]: {
                 type: "boolean",
@@ -117,9 +110,15 @@ export function getCli(argv?: string[]) {
                 type: "boolean",
                 shortFlag: "v",
             },
+            [Option.dest]: {
+                type: "string",
+                shortFlag: "d",
+                default: process.cwd(),
+            },
         },
         inferType: true,
         helpIndent: 3,
+        
         // if argv is defined, return an object to be spread. If not, expression evaluates
         //  to undefined--which the spread operator ignores.
         ...(argv && { argv }),
@@ -131,13 +130,3 @@ export function getCli(argv?: string[]) {
     }
     return cli;
 }
-
-
-// const argv = process.argv.slice(2);
-// const argv: string[] = ["-h"];
-// const argv = ["-l", "bn-l/repo"];
-
-// const cli = getCli();
-// const { input, flags } = cli;
-// console.log(input, flags);
-
