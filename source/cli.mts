@@ -32,6 +32,8 @@ export enum Option {
     conflictsOnly = "conflictsOnly",
     keepIf = "keepIf",
     quiet = "quiet",
+    help = "help",
+    version = "version",
 }
 
 export const helpText = `
@@ -110,11 +112,11 @@ export function getCli(argv?: string[]) {
                 type: "string",
                 choices: ["newer", "existing"],
             },
-            help: {
+            [Option.help]: {
                 type: "boolean",
                 shortFlag: "h",
             },
-            version: {
+            [Option.version]: {
                 type: "boolean",
                 shortFlag: "v",
             },
@@ -131,6 +133,13 @@ export function getCli(argv?: string[]) {
         //  to undefined--which the spread operator ignores.
         ...(argv && { argv }),
     });
+
+    for (const flag of Object.keys(cli.flags)) {
+        if (!(flag in Option)) {
+            console.error(`\nError: Uknown flag "${ flag }". Run ${ name } -h to show help.\n`);
+            process.exit(1);
+        }
+    }
 
     if (cli.input.length === 0) {
         console.error(`\nError: Need at least one path. Run ${ name } -h to show help.\n`);
