@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 import { executeParsedGroups, groupByOwner, parseOwnerGroups } from "./main.mjs";
 import { c, getCli } from "./cli.mjs";
