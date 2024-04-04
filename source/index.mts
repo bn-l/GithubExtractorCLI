@@ -15,6 +15,12 @@ import wrapAnsi from "wrap-ansi";
 //    copied to the README.
 
 // Todo:
+// - list with or without owner/repo prefix
+// - Quick SVG based video. 
+// - Longer playable .cast for website.
+
+// - Include example of getting the fzf install script with ghex in the main video or
+//    an alt.
 // - create video demo and add to readme
 // - Show usages with fzf--upload ascii svg recording to docs/cli/ (by way of the README)
 
@@ -27,14 +33,14 @@ try {
     const { input: paths, flags } = getCli();
     c.showColor = flags.colors;
 
-    let { list: listMode = false, quiet = false, dest, keepIf, caseInsensitive = false, conflictsOnly = false } = flags;
+    let { list: listMode = false, quiet = false, dest, keepIf, caseInsensitive = false, conflictsOnly = false, prefix = false } = flags;
 
     const ownerGrouping: OwnerGroup = groupByOwner({ paths });
     const parsedGroups: ParsedGroup[] = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
 
     if (!listMode && !quiet) spinner = ora("Downloading...").start();
 
-    await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, keepIf, quiet });
+    await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, keepIf, quiet, prefix });
 
     if (spinner) {
         spinner.succeed(`Successfully downloaded to file://${ pathe.resolve(dest) }`);

@@ -26,6 +26,7 @@ const { name, docsUrl } = meow({ importMeta: import.meta }).pkg as { name: strin
 export enum Option {
     dest = "dest",
     list = "list",
+    prefix = "prefix",
     colors = "colors",
     caseInsensitive = "caseInsensitive",
     conflictsOnly = "conflictsOnly",
@@ -47,6 +48,8 @@ export const helpText = `
         -l, --list                  List files. Useful as a dry run and with fzf. Does not
                                      download. Will show show conflicts for the current 
                                      working directory if -d / --dest is not specified.
+        -p, --prefix                Append the owner/repo prefix to the path in list output
+                                     Useful for feeding back into ${ name }.
         -c, --conflicts-only        Only show conflicts when listing.
         -d, --dest <folder>         Destination folder. Defaults to the current directory.
         -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
@@ -81,6 +84,10 @@ export function getCli(argv?: string[]) {
             [Option.list]: {
                 type: "boolean",
                 shortFlag: "l",
+            },
+            [Option.prefix]: {
+                type: "boolean",
+                shortFlag: "p",
             },
             [Option.colors]: {
                 type: "boolean",

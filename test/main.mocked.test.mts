@@ -147,4 +147,24 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         expect(stubbedDownloadTo.callCount).toBe(2);
     });
 
+    it("It correctly supplies prefix args with owner/repo when prefix is true", async () => {
+
+        const prefix = true;
+        listMode = true;
+
+        ownerGrouping = ownerGrouping = {
+            owner1: { repo1: [ "path1.txt", "path2.txt" ], repo2: [ "path1.txt", "path2.txt" ] },
+        };
+
+        const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
+        const stubbedList = sinon.stub(GithubExtractor.prototype, "list").resolves([]);
+        
+        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf, prefix });
+
+        expect(stubbedList.callCount).toBe(2);
+        expect(stubbedList.firstCall.args?.[0]?.streamOptions?.prefix).toBe("owner1/repo1/");
+        expect(stubbedList.secondCall.args?.[0]?.streamOptions?.prefix).toBe("owner1/repo2/");
+
+    });
+
 });

@@ -2,7 +2,7 @@
 import { c } from "./cli.mjs";
 
 import pico from "picomatch";
-import GithubExtractor, { Typo } from "github-extractor";
+import GithubExtractor, { Typo, ListOptions } from "github-extractor";
 import indentString from "indent-string";
 
 
@@ -133,15 +133,17 @@ function handleTypos(typos: Typo[], quiet: boolean) {
 }
 
 export async function executeParsedGroups(
-    { listMode, conflictsOnly, parsedGroups, dest, keepIf, quiet }: 
-    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; keepIf: string | undefined; quiet: boolean }
+    { listMode, conflictsOnly, parsedGroups, dest, keepIf, quiet, prefix }: 
+    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; keepIf: string | undefined; quiet: boolean; prefix?: boolean }
 
 ): Promise<void> {
     for (const group of parsedGroups) {
 
         if (listMode) {
-
-            const opts = { conflictsOnly, dest, match: group.regex! };
+            const outPrefix = prefix ? 
+                `${ group.gheInstance.owner }/${ group.gheInstance.repo }/` : 
+                "";
+            const opts: ListOptions = { conflictsOnly, dest, match: group.regex!, streamOptions: { prefix: outPrefix } };
             await group.gheInstance.list(opts);
             continue;
         }

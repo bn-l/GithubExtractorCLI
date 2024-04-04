@@ -61,6 +61,11 @@ List files. Useful as a dry run and with fzf. Does not
 download. Will show show conflicts for the current 
 working directory if -d / --dest is not specified.
 
+### -p, --prefix         
+
+Append the owner/repo prefix to the path in list output. 
+This is useful for feeding back into ghex.
+
 ### -c, --conflicts-only  
 
 Only show conflicts when listing.
