@@ -27,6 +27,8 @@ process.on("unhandledRejection", (error) => {
 //    copied to the README.
 
 // Todo:
+// - inlcude  ghex -lc facebook/react | xargs rm -rf usage
+
 // - option to skip initial dir scan
 // - list with or without owner/repo prefix
 // - Quick SVG based video. 

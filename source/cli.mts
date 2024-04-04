@@ -110,6 +110,7 @@ export function getCli(argv?: string[]) {
             },
             [Option.keepIf]: {
                 type: "string",
+                shortFlag: "k",
                 choices: ["newer", "existing"],
             },
             [Option.help]: {
