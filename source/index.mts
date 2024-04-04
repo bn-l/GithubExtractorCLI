@@ -10,11 +10,22 @@ import ora, { Ora } from "ora";
 import pathe from "pathe";
 import wrapAnsi from "wrap-ansi";
 
+
+process.on("unhandledRejection", (error) => {
+    if (error instanceof Error) {
+        console.error(`\nError: ${ error.message }\n\nIf this is a bug, report here: https://github.com/bn-l/GithubExtractorCLI/issues\n`);
+    }
+    else { 
+        console.error(`\nError: ${ error }\n\nIf this is a bug, report here: https://github.com/bn-l/GithubExtractorCLI/issues\n`);
+    }
+});
+
 // ? Note:
 // - The cli's help text is the main documentation. All changes should begin there and then be
 //    copied to the README.
 
 // Todo:
+// - option to skip initial dir scan
 // - list with or without owner/repo prefix
 // - Quick SVG based video. 
 // - Longer playable .cast for website.
