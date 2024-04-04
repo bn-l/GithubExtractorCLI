@@ -11,7 +11,7 @@ import pathe from "pathe";
 import wrapAnsi from "wrap-ansi";
 
 
-process.on("unhandledRejection", (error) => {
+process.on("uncaughtException", (error) => {
     if (error instanceof Error) {
         console.error(`\nError: ${ error.message }\n\nIf this is a bug, report here: https://github.com/bn-l/GithubExtractorCLI/issues\n`);
         process.exit(1);
