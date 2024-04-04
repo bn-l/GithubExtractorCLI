@@ -9,13 +9,14 @@ import ora, { Ora } from "ora";
 import pathe from "pathe";
 import wrapAnsi from "wrap-ansi";
 
-// name
+// ? Note:
+// - The cli's help text is the main documentation. All changes should begin there and then be
+//    copied to the README.
 
 // Todo:
-// - Add to docs website under "CLI". Import github readme file in <script setup> tags + add 
-//     small blurb 
 // - create video demo and add to readme
 // - Show usages with fzf--upload ascii svg recording to docs/cli/ (by way of the README)
+
 
 let spinner: Ora | undefined = undefined;
 let quiet = false;
