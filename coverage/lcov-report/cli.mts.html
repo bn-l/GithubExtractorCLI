@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">97.98% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>133/133</span>
+                <span class='fraction'>146/149</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">95% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>19/20</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">97.98% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>133/133</span>
+                <span class='fraction'>146/149</span>
             </div>
         
             
@@ -196,7 +196,23 @@
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
 <a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -272,6 +288,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
@@ -322,6 +343,17 @@
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">191x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">191x</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -357,11 +389,14 @@ const { name, docsUrl } = meow({ importMeta: import.meta }).pkg as { name: strin
 export enum Option {
     dest = "dest",
     list = "list",
+    prefix = "prefix",
     colors = "colors",
     caseInsensitive = "caseInsensitive",
     conflictsOnly = "conflictsOnly",
     keepIf = "keepIf",
     quiet = "quiet",
+    help = "help",
+    version = "version",
 }
 &nbsp;
 export const helpText = `
@@ -378,6 +413,8 @@ export const helpText = `
         -l, --list                  List files. Useful as a dry run and with fzf. Does not
                                      download. Will show show conflicts for the current 
                                      working directory if -d / --dest is not specified.
+        -p, --prefix                Append the owner/repo prefix to the path in list output
+                                     Useful for feeding back into ${ name }.
         -c, --conflicts-only        Only show conflicts when listing.
         -d, --dest &lt;folder&gt;         Destination folder. Defaults to the current directory.
         -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
@@ -413,6 +450,10 @@ export function getCli(argv?: string[]) {
                 type: "boolean",
                 shortFlag: "l",
             },
+            [Option.prefix]: {
+                type: "boolean",
+                shortFlag: "p",
+            },
             [Option.colors]: {
                 type: "boolean",
                 default: !noColor(),   
@@ -434,11 +475,11 @@ export function getCli(argv?: string[]) {
                 type: "string",
                 choices: ["newer", "existing"],
             },
-            help: {
+            [Option.help]: {
                 type: "boolean",
                 shortFlag: "h",
             },
-            version: {
+            [Option.version]: {
                 type: "boolean",
                 shortFlag: "v",
             },
@@ -456,6 +497,13 @@ export function getCli(argv?: string[]) {
         ...(argv &amp;&amp; { argv }),
     });
 &nbsp;
+    for (const flag of Object.keys(cli.flags)) {
+        if (!(flag in Option)) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >            console.error(`\nError: Uknown flag "${ flag }". Run ${ name } -h to show help.\n`);</span>
+<span class="cstat-no" title="statement not covered" >            process.exit(1);</span>
+<span class="cstat-no" title="statement not covered" >        }</span>
+    }
+&nbsp;
     if (cli.input.length === 0) {
         console.error(`\nError: Need at least one path. Run ${ name } -h to show help.\n`);
         process.exit(1);
@@ -469,7 +517,7 @@ export function getCli(argv?: string[]) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-04-03T19:40:07.452Z
+                at 2024-04-04T11:23:42.734Z
             </div>
         <script src="prettify.js"></script>
         <script>
