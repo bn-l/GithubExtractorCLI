@@ -121,7 +121,7 @@ describe.sequential("End to end online testing using executeParsedGroups", async
     });
 
 
-    it("correctly logs potential typos", async () => {
+    it("correctly returns typos", async () => {
 
         await new Promise(resolve => setTimeout(resolve, Math.random() * 1000));
 
@@ -143,7 +143,7 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const fakeConsoleLog = sinon.stub(console, "log");
 
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        const typoMessages = await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
 
         // @ts-expect-error testing
         const files = fs.readdirSync(TEMP_DIR, {recursive: true}).map(f => pathe.normalize(f));
@@ -152,10 +152,9 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         expect(files).to.have.deep.members(expectedFiles);
 
-        expect(fakeConsoleLog.callCount).toBe(1);
-
-        expect(fakeConsoleLog.firstCall.args[0]).toContain("RAMME.md");
-        expect(fakeConsoleLog.firstCall.args[0]).toContain("README.md");
+        // first call is header
+        expect(typoMessages).to.match(/README\.md/);
+        expect(typoMessages).to.match(/RAMME\.md/);
 
     });
 

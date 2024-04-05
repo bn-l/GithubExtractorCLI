@@ -153,8 +153,7 @@ export async function executeParsedGroups(
 
             const typos = await group.gheInstance.downloadTo(opts);
             if (typos.length) {
-                const t = typos.map(t => `${ c.warning(t[0]) } -> ${ c.success(t[1]) }`).join("\n");
-                typoMessages.push(t);
+                typoMessages.push(typos.map(t => `${ c.warning(t[0]) } -> ${ c.success(t[1]) }`).join("\n"));
             }
         }
     }
