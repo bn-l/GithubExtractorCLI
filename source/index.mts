@@ -11,7 +11,12 @@ import pathe from "pathe";
 import wrapAnsi from "wrap-ansi";
 
 
+let debug = false;
+
 process.on("uncaughtException", (error) => {
+
+    if (debug) throw error;
+
     if (error instanceof Error) {
         console.error(`\nError: ${ error.message }\n\nIf this is a bug, report here: https://github.com/bn-l/GithubExtractorCLI/issues\n`);
         process.exit(1);
@@ -32,7 +37,7 @@ process.on("uncaughtException", (error) => {
 // - option to skip initial dir scan
 // - list with or without owner/repo prefix
 // - Quick SVG based video. 
-// - Longer playable .cast for website.
+// - Longer playable .cast for website.c
 
 // - Include example of getting the fzf install script with ghex in the main video or
 //    an alt.
@@ -47,22 +52,25 @@ try {
 
     const { input: paths, flags } = getCli();
     c.showColor = flags.colors;
+    debug = !!flags.debug;
 
-    let { list: listMode = false, quiet = false, dest, keepIf, caseInsensitive = false, conflictsOnly = false, prefix = false } = flags;
+    let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, force = false, echoPaths = false } = flags;
 
     const ownerGrouping: OwnerGroup = groupByOwner({ paths });
     const parsedGroups: ParsedGroup[] = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
 
-    if (!listMode && !quiet) spinner = ora("Downloading...").start();
+    if (!listMode && !quiet) {
+        spinner = ora("Downloading...").start();
+    }
 
-    await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, keepIf, quiet, prefix });
+    await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, quiet, prefix, force, echoPaths });
 
     if (spinner) {
-        spinner.succeed(`Successfully downloaded to file://${ pathe.resolve(dest) }`);
+        spinner.succeed(`Successfully downloaded to folder: file:/${ pathe.resolve(dest) }`);
     }
 }
 catch (error) {
-    
+    if (debug) throw error;
     if (error instanceof Error && !quiet) {
         const message = wrapAnsi(`\nError: ${ error.message }\n\nIf this is a bug, report here: https://github.com/bn-l/GithubExtractorCLI/issues\n`, 90, { hard: false });
         if (spinner) spinner.fail(message);

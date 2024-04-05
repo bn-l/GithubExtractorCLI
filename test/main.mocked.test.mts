@@ -22,7 +22,9 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
     let caseInsensitive = false;
     let conflictsOnly = false;
     let quiet = false;
-    let keepIf: undefined | string = undefined;
+    let force = false;
+    let echoPaths = false;
+    let prefix = false;
         
     beforeEach(() => {
         sinon.restore();
@@ -51,13 +53,13 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
 
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
 
         expect(stubbedDownloadTo.calledOnce).toBe(true);
+        // partial deep existing
         expect(stubbedDownloadTo.firstCall.args[0]).to.deep.equal({
             "extractOptions": {
-                "keep-existing": undefined,
-                "keep-newer": undefined,
+                "keep-existing": !force,
             },
             selectedPaths: ["path1.txt", "path2.txt"],
             dest: TEMP_DIR,
@@ -86,7 +88,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
 
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
 
         expect(stubbedDownloadTo.calledOnce).toBe(true);
 
@@ -97,8 +99,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
 
         expect(otherArgs).to.deep.equal({
             "extractOptions": {
-                "keep-existing": undefined,
-                "keep-newer": undefined,
+                "keep-existing": !force,
             },
             dest: TEMP_DIR,
         });
@@ -114,7 +115,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
 
         expect(stubbedDownloadTo.callCount).toBe(2);
     });
@@ -128,7 +129,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
 
         expect(stubbedDownloadTo.callCount).toBe(1);
     });
@@ -142,7 +143,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
 
         expect(stubbedDownloadTo.callCount).toBe(2);
     });
@@ -159,11 +160,31 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedList = sinon.stub(GithubExtractor.prototype, "list").resolves([]);
         
-        await executeParsedGroups({conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, keepIf, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
 
         expect(stubbedList.callCount).toBe(2);
         expect(stubbedList.firstCall.args?.[0]?.streamOptions?.prefix).toBe("owner1/repo1/");
         expect(stubbedList.secondCall.args?.[0]?.streamOptions?.prefix).toBe("owner1/repo2/");
+
+    });
+
+    it("It correctly supplies prefix args with owner/repo when prefix is false", async () => {
+
+        const prefix = false;
+        listMode = true;
+
+        ownerGrouping = ownerGrouping = {
+            owner1: { repo1: [ "path1.txt", "path2.txt" ], repo2: [ "path1.txt", "path2.txt" ] },
+        };
+
+        const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
+        const stubbedList = sinon.stub(GithubExtractor.prototype, "list").resolves([]);
+        
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+
+        expect(stubbedList.callCount).toBe(2);
+        expect(stubbedList.firstCall.args?.[0]?.streamOptions?.prefix).toBe("");
+        expect(stubbedList.secondCall.args?.[0]?.streamOptions?.prefix).toBe("");
 
     });
 

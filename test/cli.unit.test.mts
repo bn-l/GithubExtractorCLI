@@ -36,20 +36,20 @@ describe("CLI tests", () => {
         expect(cli.flags[Option.quiet]).toBe(true);
     });
 
-    it("--keepIf flag", () => {
-        process.argv = ["node", "cli.mts", "--keepIf", "newer", "some/path"];
+    it("--echoPaths flag sets correctly and also triggers quiet", () => {
+        process.argv = ["node", "cli.mts", "--echo-paths", "some/path"];
         const cli = getCli();
-        expect(cli.flags[Option.keepIf]).toBe("newer");
-    });
-
-    it("--keepIf flag", () => {
-        process.argv = ["node", "cli.mts", "--keepIf", "existing", "some/path"];
-        const cli = getCli();
-        expect(cli.flags[Option.keepIf]).toBe("existing");
+        expect(cli.flags[Option.echoPaths]).toBe(true);
+        expect(cli.flags[Option.quiet]).toBe(true);
     });
 
     it("should throw an error if no path is given", () => {
         process.argv = ["node", "cli.mts"];
+        expect(() => getCli()).toThrow();
+    });
+
+    it("should throw an error if an unrecognised option is given", () => {
+        process.argv = ["node", "cli.mts", "--yooooooooo-goooooooooooo", "some/path"];
         expect(() => getCli()).toThrow();
     });
 
@@ -61,7 +61,7 @@ describe("CLI tests", () => {
         expect(cli.flags[Option.conflictsOnly]).toBeFalsy();
         expect(cli.flags[Option.caseInsensitive]).toBeFalsy();
         expect(cli.flags[Option.quiet]).toBe(false);
-        expect(cli.flags[Option.keepIf]).toBeFalsy();
+        expect(cli.flags[Option.echoPaths]).toBeFalsy();
     });
 
 });
@@ -111,7 +111,7 @@ describe("Color var tests", async () => {
 });
 
 
-describe('cli.mts', () => {
+describe('color printer tests', () => {
 
     const testCases = [
         'error',

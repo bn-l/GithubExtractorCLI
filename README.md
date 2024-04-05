@@ -46,20 +46,20 @@ ghex [options] <paths...>
 
 ### paths
 
-One or more paths to download. Can be a whole 
-repo, a folder or a file. Supports globs but the path should be quoted.
-To exclude use a negative glob ("!" at the beginning).
-Can mix paths from different repos (conflicts resolved
-left to right). A trailing slash means a whole folder.
-
+One or more paths to download. Can be a whole repo, or a 
+folder or a file within it. Supports globs but the path 
+should be quoted. To exclude use a negative glob ("!" at 
+the beginning). Can mix paths from different repos 
+(conflicts resolved left to right). A trailing slash means
+a whole folder. Conflicting files are skipped by default.
 
 ## Options
 
 ### -l, --list 
 
 List files. Useful as a dry run and with fzf. Does not
-download. Will show show conflicts for the current 
-working directory if -d / --dest is not specified.
+download. Will show show conflicts for the current working
+directory or -d / --dest.
 
 ### -p, --prefix         
 
@@ -70,7 +70,7 @@ This is useful for feeding back into ghex.
 
 Only show conflicts when listing.
 
-### -d, --dest folder   
+### -d, --dest (folder)   
 
 Destination folder. Defaults to the current directory.
 
@@ -79,20 +79,29 @@ Destination folder. Defaults to the current directory.
 Ignores case when checking for conflicts. Default is 
 case-sensitive--i.e. casing matters.
 
-### -k, --keep-if condition   
+### -f, --force
 
-"newer" | "existing". Will keep conflicting files 
-if they exist or are newer. WARNING: The
-default is to overwrite existing silently.
+Overwrite all existing conflicting files. Default false.
+
+### -e, --echo-paths        
+
+After writing, outputs the path of each file plus a new line.
+Useful for piping to other commands. Also sets -quiet &
+--no-color.
 
 ### -q, --quiet    
 
 No success or error messages.     
 
-### --colors    
+### --no-prefix    
 
-Use ansi escape characters to color output.
-Default true but respects the NO_COLOR env var if set. 
+Remove the owner/repo prefix from the path in list output
+
+### --no-colors         
+
+Strip ansi escape characters used to color output.
+ghex respects the NO_COLOR env var if set also. 
+
 
 ## Downloading Examples:
 
@@ -132,3 +141,5 @@ npx ghex -l "facebook/react/.circleci/*"
 
 <!-- Everything after the snip is snipped off -->
 <!-- SNIP -->
+
+

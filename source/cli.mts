@@ -21,17 +21,20 @@ export const c = {
 };
 
 
-const { name, docsUrl } = meow({ importMeta: import.meta }).pkg as { name: string; docsUrl: string };
+const { name, docsUrl } = { name: "ghex", docsUrl: "" };
 
 export enum Option {
-    dest = "dest",
     list = "list",
+    conflictsOnly = "conflictsOnly",
+    dest = "dest",
+    caseInsensitive = "caseInsensitive",
+    force = "force",
+    unwrap = "unwrap",
+    echoPaths = "echoPaths",
+    quiet = "quiet",
     prefix = "prefix",
     colors = "colors",
-    caseInsensitive = "caseInsensitive",
-    conflictsOnly = "conflictsOnly",
-    keepIf = "keepIf",
-    quiet = "quiet",
+    debug = "debug",
     help = "help",
     version = "version",
 }
@@ -40,28 +43,28 @@ export const helpText = `
         Usage: ${ c.binColor(name) } [options] <paths...>
 
         ${ c.strong("Arguments:") }
-        paths                      One or more paths to download. Can be a whole 
-                                    repo, a folder or a file. ${ c.strong("Supports globs") }
-                                    but the path should be quoted. To exclude use a negative 
-                                    glob ("!" at the beginning). Can mix paths from different 
-                                    repos (conflicts resolved left to right). A trailing slash
-                                    means a whole folder.
+        paths                      One or more paths to download. Can be a whole repo, or a 
+                                    folder or a file within it. ${ c.strong("Supports globs") } but the path 
+                                    should be quoted. To exclude use a negative glob ("!" at 
+                                    the beginning). Can mix paths from different repos 
+                                    (conflicts resolved left to right). A trailing slash means
+                                    a whole folder. ${ c.strong("Conflicting files are skipped by default") }.
         ${ c.strong("Options:") }
         -l, --list                  List files. Useful as a dry run and with fzf. Does not
-                                     download. Will show show conflicts for the current 
-                                     working directory if -d / --dest is not specified.
-        -p, --prefix                Append the owner/repo prefix to the path in list output
-                                     Useful for feeding back into ${ name }.
+                                     download. Will show show conflicts for the current working
+                                     directory or -d / --dest.
         -c, --conflicts-only        Only show conflicts when listing.
         -d, --dest <folder>         Destination folder. Defaults to the current directory.
         -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
                                      case-sensitive--i.e. casing matters.
-        -k, --keep-if <condition>   "newer" | "existing". Will keep conflicting files 
-                                     if they exist or are newer. ${ c.careful("WARNING:") } The
-                                     default is to overwrite existing silently.
-        -q, --quiet                 No success or error messages.                   
-        --colors                    Use ansi escape characters to color output.
-                                     Default true but respects the NO_COLOR env var if set. 
+        -f, --force                 ${ c.strong("Overwrite all existing conflicting files. Default false.") }
+        -e, --echo-paths            After writing, outputs the path of each file plus a new line.
+                                     Useful for piping to other commands. Also sets -quiet &
+                                     --no-color. 
+        -q, --quiet                 No success or error messages.      
+        --no-prefix                 Remove the owner/repo prefix from the path in list output
+        --no-colors                 Strip ansi escape characters used to color output.
+                                     ${ c.binColor(name) } respects the NO_COLOR env var if set also. 
 
         ${ c.strong("Download Examples:") }
         Entire repo             ${ c.binColor(name) + " facebook/react" }
@@ -87,53 +90,67 @@ export function getCli(argv?: string[]) {
                 type: "boolean",
                 shortFlag: "l",
             },
-            [Option.prefix]: {
-                type: "boolean",
-                shortFlag: "p",
-            },
-            [Option.colors]: {
-                type: "boolean",
-                default: !noColor(),   
-            },
             [Option.conflictsOnly]: {
                 type: "boolean",
                 shortFlag: "c",
-            },
-            [Option.caseInsensitive]: {
-                type: "boolean",
-                shortFlag: "i",
-            },
-            [Option.quiet]: {
-                type: "boolean",
-                shortFlag: "q",
-                default: false,
-            },
-            [Option.keepIf]: {
-                type: "string",
-                shortFlag: "k",
-                choices: ["newer", "existing"],
-            },
-            [Option.help]: {
-                type: "boolean",
-                shortFlag: "h",
-            },
-            [Option.version]: {
-                type: "boolean",
-                shortFlag: "v",
             },
             [Option.dest]: {
                 type: "string",
                 shortFlag: "d",
                 default: process.cwd(),
             },
+            [Option.caseInsensitive]: {
+                type: "boolean",
+                shortFlag: "i",
+            },
+            [Option.force]: {
+                type: "boolean",
+                shortFlag: "f",
+            },
+            [Option.unwrap]: {
+                type: "boolean",
+                shortFlag: "u",
+            },
+            [Option.echoPaths]: {
+                type: "boolean",
+                shortFlag: "e",
+            },
+            [Option.quiet]: {
+                type: "boolean",
+                shortFlag: "q",
+                default: false,
+            },
+            [Option.prefix]: {
+                type: "boolean",
+                default: true,
+            },
+            [Option.colors]: {
+                type: "boolean",
+                default: !noColor(),   
+            },
+            [Option.debug]: {
+                type: "boolean",
+            },
+            [Option.help]: {
+                type: "boolean",
+            },
+            [Option.version]: {
+                type: "boolean",
+                shortFlag: "v",
+            },
         },
         inferType: true,
         helpIndent: 3,
-        
+
         // if argv is defined, return an object to be spread. If not, expression evaluates
         //  to undefined--which the spread operator ignores.
         ...(argv && { argv }),
     });
+
+    if (cli.flags.echoPaths) { 
+        cli.flags.quiet = true;
+        cli.flags.colors = false;
+    }
 
     for (const flag of Object.keys(cli.flags)) {
         if (!(flag in Option)) {
@@ -144,7 +161,7 @@ export function getCli(argv?: string[]) {
 
     if (cli.input.length === 0) {
         console.error(`\nError: Need at least one path. Run ${ name } -h to show help.\n`);
-        process.exit(1);
+        process.exit(2);
     }
     return cli;
 }

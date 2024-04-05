@@ -2,8 +2,9 @@
 import { c } from "./cli.mjs";
 
 import pico from "picomatch";
-import GithubExtractor, { Typo, ListOptions } from "github-extractor";
+import GithubExtractor, { Typo, ListOptions, DownloadToOptions } from "github-extractor";
 import indentString from "indent-string";
+import { ReadEntry } from "tar";
 
 
 export function normalizePath(rPath: string) {
@@ -132,11 +133,15 @@ function handleTypos(typos: Typo[], quiet: boolean) {
     }
 }
 
+
 export async function executeParsedGroups(
-    { listMode, conflictsOnly, parsedGroups, dest, keepIf, quiet, prefix }: 
-    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; keepIf: string | undefined; quiet: boolean; prefix?: boolean }
+    { listMode, conflictsOnly, parsedGroups, dest, quiet, prefix, force, echoPaths }: 
+    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; quiet: boolean; prefix: boolean; force: boolean; echoPaths: boolean }
 
 ): Promise<void> {
+    
+    const onFileWritten = (entry: ReadEntry) => console.log(entry.path);
+
     for (const group of parsedGroups) {
 
         if (listMode) {
@@ -148,14 +153,14 @@ export async function executeParsedGroups(
             continue;
         }
         else {
-            const opts = {
+            const opts: DownloadToOptions = {
                 dest,
                 ...(group.selectedFiles && { selectedPaths: group.selectedFiles }),
                 ...(group.regex && { match: group.regex }),
                 extractOptions: {
-                    "keep-existing": keepIf && keepIf === "existing" ? true : undefined,
-                    "keep-newer": keepIf && keepIf === "newer" ? true : undefined,
+                    "keep-existing": !force,
                 },
+                ...(echoPaths && { onFileWritten }),
             };
             const typos = await group.gheInstance.downloadTo(opts);
 
@@ -163,4 +168,3 @@ export async function executeParsedGroups(
         }
     }
 }
-
