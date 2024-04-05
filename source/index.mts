@@ -54,7 +54,7 @@ try {
     c.showColor = flags.colors;
     debug = !!flags.debug;
 
-    let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, force = false, echoPaths = false } = flags;
+    let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, force = false, echoPaths = false, strip } = flags;
 
     const ownerGrouping: OwnerGroup = groupByOwner({ paths });
     const parsedGroups: ParsedGroup[] = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
@@ -63,7 +63,7 @@ try {
         spinner = ora("Downloading...").start();
     }
 
-    await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, quiet, prefix, force, echoPaths });
+    await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, quiet, prefix, force, echoPaths, strip });
 
     if (spinner) {
         spinner.succeed(`Successfully downloaded to folder: file:/${ pathe.resolve(dest) }`);

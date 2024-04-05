@@ -31,6 +31,7 @@ export enum Option {
     force = "force",
     unwrap = "unwrap",
     echoPaths = "echoPaths",
+    strip = "strip",
     quiet = "quiet",
     prefix = "prefix",
     colors = "colors",
@@ -43,28 +44,29 @@ export const helpText = `
         Usage: ${ c.binColor(name) } [options] <paths...>
 
         ${ c.strong("Arguments:") }
-        paths                      One or more paths to download. Can be a whole repo, or a 
-                                    folder or a file within it. ${ c.strong("Supports globs") } but the path 
-                                    should be quoted. To exclude use a negative glob ("!" at 
-                                    the beginning). Can mix paths from different repos 
-                                    (conflicts resolved left to right). A trailing slash means
-                                    a whole folder. ${ c.strong("Conflicting files are skipped by default") }.
+        paths                   One or more paths to download. Can be a whole repo, or a 
+                                 folder or a file within it. ${ c.strong("Supports globs") } but the path 
+                                 should be quoted. To exclude use a negative glob ("!" at 
+                                 the beginning). Can mix paths from different repos 
+                                 (conflicts resolved left to right). A trailing slash means
+                                 a whole folder. ${ c.strong("Conflicting files are skipped by default") }.
         ${ c.strong("Options:") }
-        -l, --list                  List files. Useful as a dry run and with fzf. Does not
-                                     download. Will show show conflicts for the current working
-                                     directory or -d / --dest.
-        -c, --conflicts-only        Only show conflicts when listing.
-        -d, --dest <folder>         Destination folder. Defaults to the current directory.
-        -i, --case-insensitive      Ignores case when checking for conflicts. Default is        
-                                     case-sensitive--i.e. casing matters.
-        -f, --force                 ${ c.strong("Overwrite all existing conflicting files. Default false.") }
-        -e, --echo-paths            After writing, outputs the path of each file plus a new line.
-                                     Useful for piping to other commands. Also sets -quiet &
-                                     --no-color. 
-        -q, --quiet                 No success or error messages.      
-        --no-prefix                 Remove the owner/repo prefix from the path in list output
-        --no-colors                 Strip ansi escape characters used to color output.
-                                     ${ c.binColor(name) } respects the NO_COLOR env var if set also. 
+        -l, --list              List files. Useful as a dry run and with fzf. Does not
+                                 download. Will show show conflicts for the current working
+                                 directory or -d / --dest.
+        -c, --conflicts-only    Only show conflicts when listing.
+        -d, --dest <folder>     Destination folder. Defaults to the current directory.
+        -i, --case-insensitive  Ignores case when checking for conflicts. Default is        
+                                 case-sensitive--i.e. casing matters.
+        -f, --force             Overwrite all existing conflicting files. Default false.
+        -e, --echo-paths        After writing, outputs the path of each file plus a new line.
+                                Useful for piping to other commands. Sets --quiet & --no-color.
+        -s, --strip <number>    Strip the first n directories from paths. If a path doesn't 
+                                have enough directories to strip, it's skipped.
+        -q, --quiet             No success or error messages.      
+        --no-prefix             Remove the owner/repo prefix from the path in list output
+        --no-colors             Strip ansi escape characters used to color output.
+                                ${ name } respects the NO_COLOR env var if set also. 
 
         ${ c.strong("Download Examples:") }
         Entire repo             ${ c.binColor(name) + " facebook/react" }
@@ -114,6 +116,10 @@ export function getCli(argv?: string[]) {
             [Option.echoPaths]: {
                 type: "boolean",
                 shortFlag: "e",
+            },
+            [Option.strip]: {
+                type: "number",
+                shortFlag: "s",
             },
             [Option.quiet]: {
                 type: "boolean",

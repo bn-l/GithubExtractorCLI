@@ -89,6 +89,11 @@ After writing, outputs the path of each file plus a new line.
 Useful for piping to other commands. Also sets -quiet &
 --no-color.
 
+### -s, --strip (number)
+
+Strip the first n directories from paths. If a path doesn't 
+have enough directories to strip, it's skipped.
+
 ### -q, --quiet    
 
 No success or error messages.     

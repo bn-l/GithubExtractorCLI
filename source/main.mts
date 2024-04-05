@@ -135,8 +135,8 @@ function handleTypos(typos: Typo[], quiet: boolean) {
 
 
 export async function executeParsedGroups(
-    { listMode, conflictsOnly, parsedGroups, dest, quiet, prefix, force, echoPaths }: 
-    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; quiet: boolean; prefix: boolean; force: boolean; echoPaths: boolean }
+    { listMode, conflictsOnly, parsedGroups, dest, quiet, prefix, force, echoPaths, strip }: 
+    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; quiet: boolean; prefix: boolean; force: boolean; echoPaths: boolean; strip?: number | undefined }
 
 ): Promise<void> {
     
@@ -159,6 +159,7 @@ export async function executeParsedGroups(
                 ...(group.regex && { match: group.regex }),
                 extractOptions: {
                     "keep-existing": !force,
+                    stripComponents: strip,
                 },
                 ...(echoPaths && { onFileWritten }),
             };

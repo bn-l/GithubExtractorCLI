@@ -25,6 +25,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
     let force = false;
     let echoPaths = false;
     let prefix = false;
+    let strip = 1;
         
     beforeEach(() => {
         sinon.restore();
@@ -53,13 +54,14 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
 
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         expect(stubbedDownloadTo.calledOnce).toBe(true);
         // partial deep existing
         expect(stubbedDownloadTo.firstCall.args[0]).to.deep.equal({
             "extractOptions": {
                 "keep-existing": !force,
+                stripComponents: strip,
             },
             selectedPaths: ["path1.txt", "path2.txt"],
             dest: TEMP_DIR,
@@ -88,7 +90,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
 
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         expect(stubbedDownloadTo.calledOnce).toBe(true);
 
@@ -100,6 +102,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         expect(otherArgs).to.deep.equal({
             "extractOptions": {
                 "keep-existing": !force,
+                stripComponents: strip,
             },
             dest: TEMP_DIR,
         });
@@ -115,7 +118,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         expect(stubbedDownloadTo.callCount).toBe(2);
     });
@@ -129,7 +132,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         expect(stubbedDownloadTo.callCount).toBe(1);
     });
@@ -143,7 +146,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedDownloadTo = sinon.stub(GithubExtractor.prototype, "downloadTo").resolves([]);
         
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         expect(stubbedDownloadTo.callCount).toBe(2);
     });
@@ -160,7 +163,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedList = sinon.stub(GithubExtractor.prototype, "list").resolves([]);
         
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         expect(stubbedList.callCount).toBe(2);
         expect(stubbedList.firstCall.args?.[0]?.streamOptions?.prefix).toBe("owner1/repo1/");
@@ -180,7 +183,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         const parsedGroups = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });        
         const stubbedList = sinon.stub(GithubExtractor.prototype, "list").resolves([]);
         
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         expect(stubbedList.callCount).toBe(2);
         expect(stubbedList.firstCall.args?.[0]?.streamOptions?.prefix).toBe("");
