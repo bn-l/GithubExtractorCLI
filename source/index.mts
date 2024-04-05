@@ -32,6 +32,9 @@ process.on("uncaughtException", (error) => {
 //    copied to the README.
 
 // Todo:
+// - Typo printing interferes with spinner. There should be one place where printing 
+//    is done. Return typo messages in stead of logging.
+
 // - inlcude  ghex -lc facebook/react | xargs rm -rf usage
 
 // - option to skip initial dir scan
@@ -63,10 +66,15 @@ try {
         spinner = ora("Downloading...").start();
     }
 
-    await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, quiet, prefix, force, echoPaths, strip });
+    const typoMessages = await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, quiet, prefix, force, echoPaths, strip });
 
     if (spinner) {
         spinner.succeed(`Successfully downloaded to folder: file:/${ pathe.resolve(dest) }`);
+
+        if (typoMessages.length) {
+            console.log("\n\nFound the following possible typos:\n(original -> suggested correction)\n\n");
+            console.log(typoMessages.join("\n"));
+        }
     }
 }
 catch (error) {

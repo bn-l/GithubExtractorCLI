@@ -95,7 +95,7 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
-    "github-extractor": "^0.0.30",
+    "github-extractor": "^0.0.31",
     "indent-string": "^5.0.0",
     "meow": "^13.2.0",
     "ora": "^8.0.1",

@@ -119,28 +119,15 @@ export function parseOwnerGroups(
 }
 
 
-function handleTypos(typos: Typo[], quiet: boolean) {
-    // type Typo = [original: string, correction: string];
-
-    if (!quiet && typos.length) {
-        const header = `\
-            Found the following possible typos:
-            (original -> suggested correction)
-
-        `;
-        const body = typos.map(t => `${ c.warning(t[0]) } -> ${ c.success(t[1]) }`).join("\n");
-        console.log(indentString(header + body, 2));
-    }
-}
-
-
 export async function executeParsedGroups(
     { listMode, conflictsOnly, parsedGroups, dest, quiet, prefix, force, echoPaths, strip }: 
     { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; quiet: boolean; prefix: boolean; force: boolean; echoPaths: boolean; strip?: number | undefined }
 
-): Promise<void> {
+): Promise<string[]> {
     
     const onFileWritten = (entry: ReadEntry) => console.log(entry.path);
+
+    const typoMessages = [];
 
     for (const group of parsedGroups) {
 
@@ -163,9 +150,14 @@ export async function executeParsedGroups(
                 },
                 ...(echoPaths && { onFileWritten }),
             };
-            const typos = await group.gheInstance.downloadTo(opts);
 
-            handleTypos(typos, quiet);
+            const typos = await group.gheInstance.downloadTo(opts);
+            if (typos.length) {
+                const t = typos.map(t => `${ c.warning(t[0]) } -> ${ c.success(t[1]) }`).join("\n");
+                typoMessages.push(t);
+            }
         }
     }
+
+    return typoMessages;
 }
