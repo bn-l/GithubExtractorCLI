@@ -8,7 +8,6 @@ import type { OwnerGroup, ParsedGroup } from "./main.mjs";
 
 import ora, { Ora } from "ora";
 import pathe from "pathe";
-import wrapAnsi from "wrap-ansi";
 
 
 let debug = false;
@@ -72,15 +71,15 @@ try {
         spinner.succeed(`Successfully downloaded to folder: file:/${ pathe.resolve(dest) }`);
 
         if (typoMessages.length) {
-            console.log("\n\nFound the following possible typos:\n(original -> suggested correction)\n\n");
-            console.log(typoMessages.join("\n"));
+            console.log("Found the following possible typos (NB: use -i to ignore casing):\n(original -> suggested correction");
+            console.log(typoMessages.join("\n") + "\n");
         }
     }
 }
 catch (error) {
     if (debug) throw error;
     if (error instanceof Error && !quiet) {
-        const message = wrapAnsi(`\nError: ${ error.message }\n\nIf this is a bug, report here: https://github.com/bn-l/GithubExtractorCLI/issues\n`, 90, { hard: false });
+        const message = `\nError: ${ error.message }\n\nIf this is a bug, report here: https://github.com/bn-l/GithubExtractorCLI/issues\n`;
         if (spinner) spinner.fail(message);
         else console.error(message);
     }

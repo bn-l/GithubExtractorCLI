@@ -3,7 +3,6 @@ import { c } from "./cli.mjs";
 
 import pico from "picomatch";
 import GithubExtractor, { Typo, ListOptions, DownloadToOptions } from "github-extractor";
-import indentString from "indent-string";
 import { ReadEntry } from "tar";
 
 
