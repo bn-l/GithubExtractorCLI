@@ -133,6 +133,7 @@ export function getCli(argv?: string[]) {
             },
             [Option.help]: {
                 type: "boolean",
+                shortFlag: "h",
             },
             [Option.version]: {
                 type: "boolean",
