@@ -17,7 +17,9 @@ See an Asciinema video of usage (including with [fzf](https://github.com/junegun
 <img src="https://github.com/bn-l/GithubExtractorCLI/actions/workflows/ci.yml/badge.svg" alt="Continuous Integration status badge">   <a href="coverage/coverage.txt"><img src="./media/coverage-badge.svg" alt="Code coverage badge"></a>  <a href="https://github.com/bn-l/GithubExtractorCLI/issues"><img src="https://img.shields.io/github/issues/bn-l/GithubExtractorCLI" alt="GitHub issues badge"></a>  <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request"> <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Pull requests welcome badge"> </a>
 </div>
 
+<br />
 
+<img src="./media/ghex-cast.svg" />
 
 
 
