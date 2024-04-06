@@ -144,7 +144,7 @@ export async function executeParsedGroups(
                 ...(group.selectedFiles && { selectedPaths: group.selectedFiles }),
                 ...(group.regex && { match: group.regex }),
                 extractOptions: {
-                    stripComponents: strip,
+                    strip,
                     "keep-existing": !force,
                 },
                 ...(echoPaths && { onFileWritten }),

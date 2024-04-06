@@ -61,7 +61,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         expect(stubbedDownloadTo.firstCall.args[0]).to.deep.equal({
             "extractOptions": {
                 "keep-existing": !force,
-                stripComponents: strip,
+                strip,
             },
             selectedPaths: ["path1.txt", "path2.txt"],
             dest: TEMP_DIR,
@@ -102,7 +102,7 @@ describe("Correct selected files given to GithubExtractor.downloadTo", async () 
         expect(otherArgs).to.deep.equal({
             "extractOptions": {
                 "keep-existing": !force,
-                stripComponents: strip,
+                strip,
             },
             dest: TEMP_DIR,
         });
