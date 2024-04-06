@@ -20,7 +20,7 @@ See an Asciinema video of usage (including with [fzf](https://github.com/junegun
 <br />
 <!-- ABOVE SNIP -->
 
-<img src="./media/ghex-cast.svg" />
+<img src="./media/ghex-svg-cat.svg" />
 
 # Quickstart CLI
 
