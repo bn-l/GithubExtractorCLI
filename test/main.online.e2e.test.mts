@@ -32,9 +32,9 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const { input: paths, flags } = getCli(cliArguments);
 
-            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false } = flags;
+            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false, strip } = flags;
 
-        await executeParsedGroups({ conflictsOnly, listMode, parsedGroups: [], dest: TEMP_DIR, force, echoPaths, prefix, quiet });
+        await executeParsedGroups({ conflictsOnly, listMode, parsedGroups: [], dest: TEMP_DIR, force, echoPaths, prefix, quiet, strip });
         
         expect(() => fs.readdirSync(TEMP_DIR, {recursive: true})).to.throw(Error);
     });
@@ -48,7 +48,7 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const { input: paths, flags } = getCli(cliArguments);
 
-            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false } = flags;
+            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false, strip } = flags;
 
         const ownerGrouping: OwnerGroup = groupByOwner({ paths });
         const parsedGroups: ParsedGroup[] = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
@@ -62,7 +62,7 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const fakeConsoleLog = sinon.stub(console, "log");
 
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest, force, echoPaths, prefix, strip });
 
         // @ts-expect-error testing
         const files = fs.readdirSync(TEMP_DIR, {recursive: true}).map(f => pathe.normalize(f));
@@ -88,7 +88,7 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const { input: paths, flags } = getCli(cliArguments);
 
-            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false } = flags;
+            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false, strip } = flags;
 
         const ownerGrouping: OwnerGroup = groupByOwner({ paths });
         const parsedGroups: ParsedGroup[] = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
@@ -102,7 +102,7 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const fakeConsoleLog = sinon.stub(console, "log");
 
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest, force, echoPaths, prefix, strip });
 
         // @ts-expect-error testing
         const files = fs.readdirSync(TEMP_DIR, {recursive: true}).map(f => pathe.normalize(f));
@@ -129,7 +129,7 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const { input: paths, flags } = getCli(cliArguments);
 
-            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false } = flags;
+            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false, strip } = flags;
 
         const ownerGrouping: OwnerGroup = groupByOwner({ paths });
         const parsedGroups: ParsedGroup[] = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
@@ -143,7 +143,7 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const fakeConsoleLog = sinon.stub(console, "log");
 
-        const typoMessages = await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        const typoMessages = await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         // @ts-expect-error testing
         const files = fs.readdirSync(TEMP_DIR, {recursive: true}).map(f => pathe.normalize(f));
@@ -183,14 +183,14 @@ describe.sequential("End to end online testing using executeParsedGroups", async
 
         const { input: paths, flags } = getCli(cliArguments);
 
-            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false } = flags;
+            let { list: listMode = false, quiet = false, dest, caseInsensitive = false, conflictsOnly = false, prefix = false, unwrap = false, force = false, echoPaths = false, strip } = flags;
 
         const ownerGrouping: OwnerGroup = groupByOwner({ paths });
         const parsedGroups: ParsedGroup[] = parseOwnerGroups({ ownerGrouping, listMode, caseInsensitive });
 
         const stdOutSpy = sinon.spy(process.stdout, "write");
 
-        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix });
+        await executeParsedGroups({ conflictsOnly, quiet, listMode, parsedGroups, dest: TEMP_DIR, force, echoPaths, prefix, strip });
 
         expect(fs.readdirSync(TEMP_DIR, { recursive: true })).to.be.empty;
 

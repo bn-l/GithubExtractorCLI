@@ -120,10 +120,10 @@ export function parseOwnerGroups(
 
 export async function executeParsedGroups(
     { listMode, conflictsOnly, parsedGroups, dest, quiet, prefix, force, echoPaths, strip }: 
-    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; quiet: boolean; prefix: boolean; force: boolean; echoPaths: boolean; strip?: number | undefined }
+    { listMode: boolean; conflictsOnly: boolean; parsedGroups: ParsedGroup[]; dest: string; quiet: boolean; prefix: boolean; force: boolean; echoPaths: boolean; strip: number | undefined }
 
 ): Promise<string[]> {
-    
+
     const onFileWritten = (entry: ReadEntry) => console.log(entry.path);
 
     const typoMessages = [];
@@ -144,8 +144,8 @@ export async function executeParsedGroups(
                 ...(group.selectedFiles && { selectedPaths: group.selectedFiles }),
                 ...(group.regex && { match: group.regex }),
                 extractOptions: {
-                    "keep-existing": !force,
                     stripComponents: strip,
+                    "keep-existing": !force,
                 },
                 ...(echoPaths && { onFileWritten }),
             };
