@@ -22,7 +22,7 @@ See an Asciinema video of usage (including with [fzf](https://github.com/junegun
 
 <img src="./media/ghex-svg-cat.svg" />
 
-# Quickstart CLI
+## Quickstart CLI
 
 Install [node](https://nodejs.org/en/download) then:
 
