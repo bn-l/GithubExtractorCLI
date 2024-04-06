@@ -21,7 +21,7 @@ export const c = {
 };
 
 
-const { name, docsUrl } = { name: "ghex", docsUrl: "" };
+const { name, docsUrl } = { name: "ghex", docsUrl: "https://bn-l.github.io/GithubExtractor/cli.html" };
 
 export enum Option {
     list = "list",

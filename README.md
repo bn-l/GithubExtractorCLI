@@ -147,5 +147,3 @@ npx ghex -l "facebook/react/.circleci/*"
 
 <!-- Everything after the snip is snipped off -->
 <!-- SNIP -->
-
-
