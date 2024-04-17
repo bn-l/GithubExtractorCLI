@@ -68,7 +68,7 @@ try {
     const typoMessages = await executeParsedGroups({ conflictsOnly, listMode, parsedGroups, dest, quiet, prefix, force, echoPaths, strip });
 
     if (spinner) {
-        spinner.succeed(`Successfully downloaded to folder: file:/${ pathe.resolve(dest) }`);
+        spinner.succeed(`Successfully downloaded to folder: file://${ pathe.resolve(dest) }`);
 
         if (typoMessages.length) {
             console.log("Found the following possible typos (NB: use -i to ignore casing):\n(original -> suggested correction");

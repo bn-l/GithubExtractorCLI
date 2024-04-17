@@ -1,7 +1,7 @@
 
 import { helpText } from "../source/cli.mjs";
 import fs from "fs";
-import stripAnsi from "strip-ansi"
+import stripAnsi from "strip-ansi";
 
 const readmePath = "./README.md";
 
